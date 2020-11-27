@@ -1,8 +1,9 @@
-package ru.itmo.coffee.store.repository
+package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import ru.itmo.coffee.store.model.Address
+import ru.itmo.coffee.store.repository.AddressRepository
 
 @Repository
 class JdbcAddressRepository(private val jdbcTemplate: JdbcTemplate) : AddressRepository {

@@ -1,8 +1,9 @@
-package ru.itmo.coffee.store.repository
+package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import ru.itmo.coffee.store.model.Customer
+import ru.itmo.coffee.store.repository.CustomerRepository
 import java.sql.ResultSet
 
 
