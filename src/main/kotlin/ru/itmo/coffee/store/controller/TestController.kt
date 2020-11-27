@@ -12,4 +12,9 @@ class TestController(private val addresses: JdbcAddressRepository) {
     fun test(@PathVariable id: Long): Address? {
         return addresses.findById(id)
     }
+
+    @GetMapping("/mnogo")
+    fun test2(): List<Address> {
+        return addresses.findAll()
+    }
 }
