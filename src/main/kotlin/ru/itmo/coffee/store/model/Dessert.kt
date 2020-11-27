@@ -1,3 +1,3 @@
 package ru.itmo.coffee.store.model
 
-class Dessert(val id: Long, val product: Product, val calories: Double, weight: Double?)
+class Dessert(id: Long, val calories: Double, val weight: Double?, name: String, cost: Double, photo: ByteArray?) : Product(id, name, cost, photo)
