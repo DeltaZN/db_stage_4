@@ -4,43 +4,37 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import ru.itmo.coffee.store.model.Customer
 import ru.itmo.coffee.store.repository.CustomerRepository
-import java.sql.ResultSet
+import ru.itmo.coffee.store.repository.mapper.CustomerMapper
 
 
 @Repository
-class JdbcCustomerRepository(private val jdbcTemplate: JdbcTemplate) : CustomerRepository {
+class JdbcCustomerRepository(private val jdbcTemplate: JdbcTemplate, private val rowMapper: CustomerMapper) : CustomerRepository {
 
     override fun save(customer: Customer): Int {
-        return jdbcTemplate.update("insert into клиент (имя, фамилия) values(?,?)", customer.firstName, customer.lastName)
+        return jdbcTemplate.update(
+                "insert into клиент (имя, фамилия, пол, дата_рождения, id_адреса, email, телефон) values (?,?,?,?,?,?,?)",
+                customer.firstName, customer.lastName, customer.sex, customer.birthDay,
+                customer.address?.id, customer.email, customer.phone)
     }
 
     override fun update(customer: Customer): Int {
         return jdbcTemplate.update(
-                "update клиент set имя = ? where id = ?",
-                customer.firstName, customer.id)
+                "update клиент set имя = ?, фамилия = ?, пол = ?, дата_рождения = ?, id_адреса = ?, email = ?, телефон = ? where id = ?",
+                customer.firstName, customer.lastName, customer.sex, customer.birthDay,
+                customer.address?.id, customer.email, customer.phone, customer.id)
     }
 
     override fun deleteById(id: Long): Int {
-        TODO("Not yet implemented")
+        return jdbcTemplate.update(
+                "delete from клиент where id = ?", id)
     }
 
     override fun findAll(): List<Customer> {
-        return jdbcTemplate.query(
-                "select * from клиент"
-        ) { rs: ResultSet, _: Int ->
-            Customer(
-                    rs.getLong("id"),
-                    rs.getString("имя"),
-                    rs.getString("фамилия")
-            )
-        }
+        return jdbcTemplate.query("select * from клиент", rowMapper)
     }
 
     override fun findById(id: Long): Customer? {
-        TODO("Not yet implemented")
-    }
-
-    override fun getNameById(id: Long): String? {
-        TODO("Not yet implemented")
+        return jdbcTemplate.queryForObject(
+                "select * from клиент where id = ?", rowMapper)
     }
 }

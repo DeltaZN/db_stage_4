@@ -3,7 +3,6 @@ package ru.itmo.coffee.store.repository.impl
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
-import ru.itmo.coffee.store.model.Coffee
 import ru.itmo.coffee.store.model.Dessert
 import ru.itmo.coffee.store.repository.DessertRepository
 import ru.itmo.coffee.store.repository.mapper.DessertMapper

@@ -9,5 +9,4 @@ interface CustomerRepository {
     fun deleteById(id: Long): Int
     fun findAll(): List<Customer>
     fun findById(id: Long): Customer?
-    fun getNameById(id: Long): String?
 }
