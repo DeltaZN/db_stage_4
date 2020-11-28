@@ -13,7 +13,7 @@ class JdbcCustomerRepository(private val jdbcTemplate: JdbcTemplate, private val
     override fun save(customer: Customer): Int {
         return jdbcTemplate.update(
                 "insert into клиент (имя, фамилия, пол, дата_рождения, id_адреса, email, телефон) values (?,?,?,?,?,?,?)",
-                customer.firstName, customer.lastName, customer.sex, customer.birthDay,
+                customer.firstName, customer.lastName, customer.sex.toString(), customer.birthDay,
                 customer.address?.id, customer.email, customer.phone)
     }
 

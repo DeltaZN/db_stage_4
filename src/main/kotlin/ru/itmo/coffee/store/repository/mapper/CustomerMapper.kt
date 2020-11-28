@@ -3,6 +3,7 @@ package ru.itmo.coffee.store.repository.mapper
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Component
 import ru.itmo.coffee.store.model.Customer
+import ru.itmo.coffee.store.model.Sex
 import ru.itmo.coffee.store.repository.AddressRepository
 import java.sql.ResultSet
 
@@ -13,7 +14,7 @@ class CustomerMapper(private val addressRepository: AddressRepository) : RowMapp
                     rs.getLong("id"),
                     rs.getString("имя"),
                     rs.getString("фамилия"),
-                    rs.getString("пол").first(),
+                    Sex.valueOf(rs.getString("пол")),
                     rs.getDate("дата_рождения").toLocalDate(),
                     addressRepository.findById(rs.getLong("id_адреса")),
                     rs.getString("email"),

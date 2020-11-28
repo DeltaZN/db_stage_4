@@ -1,0 +1,11 @@
+package ru.itmo.coffee.store.repository
+
+import ru.itmo.coffee.store.model.CoffeeStore
+
+interface CoffeeStoreRepository {
+    fun save(coffeeStore: CoffeeStore): Int
+    fun update(coffeeStore: CoffeeStore): Int
+    fun deleteById(id: Long): Int
+    fun findAll(): List<CoffeeStore>
+    fun findById(id: Long): CoffeeStore?
+}
