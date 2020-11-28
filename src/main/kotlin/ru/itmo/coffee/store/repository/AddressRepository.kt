@@ -1,6 +1,6 @@
 package ru.itmo.coffee.store.repository
 
-import ru.itmo.coffee.store.model.Address
+import ru.itmo.coffee.store.dao.Address
 
 interface AddressRepository {
     fun save(address: Address): Int

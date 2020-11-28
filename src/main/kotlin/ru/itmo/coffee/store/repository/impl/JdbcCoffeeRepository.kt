@@ -1,10 +1,9 @@
 package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.PreparedStatementCreator
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
-import ru.itmo.coffee.store.model.Coffee
+import ru.itmo.coffee.store.dao.Coffee
 import ru.itmo.coffee.store.repository.CoffeeRepository
 import ru.itmo.coffee.store.repository.mapper.CoffeeMapper
 import java.sql.Connection

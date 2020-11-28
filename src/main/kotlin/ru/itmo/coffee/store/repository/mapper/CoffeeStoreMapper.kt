@@ -1,7 +1,7 @@
 package ru.itmo.coffee.store.repository.mapper
 
 import org.springframework.jdbc.core.RowMapper
-import ru.itmo.coffee.store.model.CoffeeStore
+import ru.itmo.coffee.store.dao.CoffeeStore
 import ru.itmo.coffee.store.repository.AddressRepository
 import java.sql.ResultSet
 

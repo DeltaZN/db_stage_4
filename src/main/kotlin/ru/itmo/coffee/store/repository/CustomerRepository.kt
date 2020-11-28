@@ -1,6 +1,6 @@
 package ru.itmo.coffee.store.repository
 
-import ru.itmo.coffee.store.model.Customer
+import ru.itmo.coffee.store.dao.Customer
 
 
 interface CustomerRepository {

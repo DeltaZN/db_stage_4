@@ -2,15 +2,18 @@ package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
-import ru.itmo.coffee.store.model.Customer
+import ru.itmo.coffee.store.dao.Customer
+import ru.itmo.coffee.store.repository.AddressRepository
 import ru.itmo.coffee.store.repository.CustomerRepository
 import ru.itmo.coffee.store.repository.mapper.CustomerMapper
 
 
 @Repository
-class JdbcCustomerRepository(private val jdbcTemplate: JdbcTemplate, private val rowMapper: CustomerMapper) : CustomerRepository {
+class JdbcCustomerRepository(private val jdbcTemplate: JdbcTemplate, private val rowMapper: CustomerMapper,
+    private val addressRepository: AddressRepository) : CustomerRepository {
 
     override fun save(customer: Customer): Int {
+        customer.address?.let { addressRepository.save(it) }
         return jdbcTemplate.update(
                 "insert into клиент (имя, фамилия, пол, дата_рождения, id_адреса, email, телефон) values (?,?,?,?,?,?,?)",
                 customer.firstName, customer.lastName, customer.sex.toString(), customer.birthDay,
@@ -18,6 +21,7 @@ class JdbcCustomerRepository(private val jdbcTemplate: JdbcTemplate, private val
     }
 
     override fun update(customer: Customer): Int {
+        customer.address?.let { addressRepository.save(it) }
         return jdbcTemplate.update(
                 "update клиент set имя = ?, фамилия = ?, пол = ?, дата_рождения = ?, id_адреса = ?, email = ?, телефон = ? where id = ?",
                 customer.firstName, customer.lastName, customer.sex, customer.birthDay,

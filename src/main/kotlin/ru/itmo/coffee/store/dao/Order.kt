@@ -1,4 +1,4 @@
-package ru.itmo.coffee.store.model
+package ru.itmo.coffee.store.dao
 
 import java.time.LocalDateTime
 

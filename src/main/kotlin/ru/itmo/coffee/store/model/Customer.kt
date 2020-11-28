@@ -2,5 +2,16 @@ package ru.itmo.coffee.store.model
 
 import java.time.LocalDate
 
-class Customer(val id: Long, val firstName: String, val lastName: String, val sex: Sex,
-            val birthDay: LocalDate?, val address: Address?, val email: String?, val phone: String)
+class Customer(var id: Long,
+               var firstName: String,
+               var lastName: String,
+               var sex: Sex,
+               var birthDay: LocalDate?,
+               var address: Address?,
+               var email: String?,
+               var phone: String) {
+
+    val favoriteCoffees: MutableList<Coffee> = ArrayList()
+    val favoriteSchedules: MutableList<Schedule> = ArrayList()
+
+}

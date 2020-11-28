@@ -1,3 +1,6 @@
 package ru.itmo.coffee.store.model
 
-abstract class Product(val id: Long, val name: String, val cost: Double, val photo: ByteArray?)
+abstract class Product(var id: Long,
+                       var name: String,
+                       var cost: Double,
+                       var photo: ByteArray?)

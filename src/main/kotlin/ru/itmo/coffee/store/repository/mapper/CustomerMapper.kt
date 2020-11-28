@@ -2,7 +2,7 @@ package ru.itmo.coffee.store.repository.mapper
 
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Component
-import ru.itmo.coffee.store.model.Customer
+import ru.itmo.coffee.store.dao.Customer
 import ru.itmo.coffee.store.model.Sex
 import ru.itmo.coffee.store.repository.AddressRepository
 import java.sql.ResultSet

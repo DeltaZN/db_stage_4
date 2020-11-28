@@ -1,6 +1,6 @@
 package ru.itmo.coffee.store.repository
 
-import ru.itmo.coffee.store.model.Dessert
+import ru.itmo.coffee.store.dao.Dessert
 
 interface DessertRepository {
     fun save(dessert: Dessert): Int

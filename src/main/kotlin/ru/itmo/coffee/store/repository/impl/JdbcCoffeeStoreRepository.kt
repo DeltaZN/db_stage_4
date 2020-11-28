@@ -1,9 +1,7 @@
 package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
-import ru.itmo.coffee.store.model.CoffeeScore
-import ru.itmo.coffee.store.model.CoffeeStore
-import ru.itmo.coffee.store.model.Customer
+import ru.itmo.coffee.store.dao.CoffeeStore
 import ru.itmo.coffee.store.repository.CoffeeStoreRepository
 import ru.itmo.coffee.store.repository.mapper.CoffeeStoreMapper
 

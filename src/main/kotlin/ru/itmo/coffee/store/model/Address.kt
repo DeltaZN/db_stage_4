@@ -1,13 +1,14 @@
 package ru.itmo.coffee.store.model
 
-class Address(val id: Long,
-              val country: String?,
-              val subject: String?,
-              val municipalDistrict: String?,
-              val settlement: String?,
-              val humanSettlement: String?,
-              val planningStructure: String?,
-              val street: String?,
-              val landPlot: String?,
-              val building: String?,
-              val room: String?)
+class Address(private var id: Long,
+              private var country: String?,
+              private var subject: String?,
+              private var municipalDistrict: String?,
+              private var settlement: String?,
+              private var humanSettlement: String?,
+              private var planningStructure: String?,
+              private var street: String?,
+              private var landPlot: String?,
+              private var building: String?,
+              private var room: String?) {
+}

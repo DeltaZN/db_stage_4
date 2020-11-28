@@ -3,7 +3,7 @@ package ru.itmo.coffee.store.controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
-import ru.itmo.coffee.store.model.Address
+import ru.itmo.coffee.store.dao.Address
 import ru.itmo.coffee.store.repository.impl.JdbcAddressRepository
 
 @RestController

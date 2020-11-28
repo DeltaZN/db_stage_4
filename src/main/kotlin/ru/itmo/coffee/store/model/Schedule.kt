@@ -1,4 +1,9 @@
 package ru.itmo.coffee.store.model
 
-class Schedule(val id: Long, val name: String?, val author: Customer, val description: String?,
-               val status: String)
+import ru.itmo.coffee.store.dao.Customer
+
+class Schedule(var id: Long,
+               var name: String?,
+               var author: Customer,
+               var description: String?,
+               var status: String)
