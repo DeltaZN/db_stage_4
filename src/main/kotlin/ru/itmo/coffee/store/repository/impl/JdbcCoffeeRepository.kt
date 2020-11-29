@@ -1,29 +1,45 @@
 package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.support.GeneratedKeyHolder
-import org.springframework.jdbc.support.KeyHolder
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert
+import ru.itmo.coffee.store.dao.Address
 import ru.itmo.coffee.store.dao.Coffee
 import ru.itmo.coffee.store.repository.CoffeeRepository
 import ru.itmo.coffee.store.repository.mapper.CoffeeMapper
-import java.sql.Connection
-import java.sql.PreparedStatement
+import javax.annotation.PostConstruct
+import javax.sql.DataSource
 
 
-class JdbcCoffeeRepository(private val jdbcTemplate: JdbcTemplate, private val rowMapper: CoffeeMapper) : CoffeeRepository {
-    override fun save(coffee: Coffee): Int {
-        val keyHolder: KeyHolder = GeneratedKeyHolder()
-        val psc: (Connection) -> PreparedStatement = { connection: Connection ->
-            val ps = connection
-                    .prepareStatement("insert into товар (название, стоимость, фото) values (?,?,?)")
-            ps.setString(1, coffee.name)
-            ps.setDouble(2, coffee.cost)
-            ps.setBytes(3, coffee.photo)
-            ps
-        }
-        jdbcTemplate.update(psc, keyHolder)
-        return jdbcTemplate.update("insert into кофе (id, id_товара, тип, состояние, id_автора) values (?,?,?,?,?)",
-                keyHolder.key, keyHolder.key, coffee.type, coffee.state, coffee.author)
+class JdbcCoffeeRepository(private val jdbcTemplate: JdbcTemplate,
+                           private val rowMapper: CoffeeMapper,
+                           private val dataSource: DataSource) : CoffeeRepository {
+
+    private lateinit var jdbcInsertProduct: SimpleJdbcInsert
+    private lateinit var jdbcInsertCoffee: SimpleJdbcInsert
+    private val cache: HashMap<Long, Address> = HashMap()
+
+    @PostConstruct
+    fun init() {
+        jdbcInsertProduct = SimpleJdbcInsert(dataSource)
+                .withTableName("товар").usingGeneratedKeyColumns("id")
+        jdbcInsertCoffee = SimpleJdbcInsert(dataSource)
+                .withTableName("кофе").usingGeneratedKeyColumns("id")
+    }
+
+    override fun save(coffee: Coffee): Long {
+        val productParameters = HashMap<String, Any?>()
+        val coffeeParameters = HashMap<String, Any?>()
+        productParameters["название"] = coffee.name
+        productParameters["стоимость"] = coffee.cost
+        productParameters["фото"] = coffee.photo
+        coffee.id = jdbcInsertProduct.executeAndReturnKey(productParameters) as Long
+        coffeeParameters["id"] = coffee.id
+        coffeeParameters["id_товара"] = coffee.id
+        coffeeParameters["тип"] = coffee.type
+        coffeeParameters["состояние"] = coffee.state
+        coffeeParameters["id_автора"] = coffee.author?.id
+        jdbcInsertCoffee.execute(coffeeParameters)
+        return coffee.id
     }
 
     override fun update(coffee: Coffee): Int {

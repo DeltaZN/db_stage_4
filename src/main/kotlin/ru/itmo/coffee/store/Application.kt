@@ -24,8 +24,8 @@ class Application(private val customerRepository: CustomerRepository,
         val address = Address(0, "russia", null, null, null, null, null, null, null, null, null)
         val customer1 = Customer(0, "Georgii", "Savin", Sex.M, null, null, null, "123123")
         val customer2 = Customer(0, "Georgii", "Savin", Sex.M, LocalDate.now(), address, "sadf@dsadasd.sa", "1123123")
-        customerRepository.save(customer1)
         customerRepository.save(customer2)
+        customerRepository.save(customer1)
     }
 
 }

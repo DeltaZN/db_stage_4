@@ -1,6 +1,6 @@
 package ru.itmo.coffee.store.dao
 
-class Address(val id: Long,
+class Address(var id: Long,
               val country: String?,
               val subject: String?,
               val municipalDistrict: String?,

@@ -1,28 +1,49 @@
 package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
+import org.springframework.jdbc.core.namedparam.SqlParameterSource
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
+import ru.itmo.coffee.store.dao.Address
 import ru.itmo.coffee.store.dao.Dessert
 import ru.itmo.coffee.store.repository.DessertRepository
 import ru.itmo.coffee.store.repository.mapper.DessertMapper
 import java.sql.Connection
 import java.sql.PreparedStatement
+import javax.annotation.PostConstruct
+import javax.sql.DataSource
 
-class JdbcDessertRepository(private val jdbcTemplate: JdbcTemplate, private val rowMapper: DessertMapper) : DessertRepository {
-    override fun save(dessert: Dessert): Int {
-        val keyHolder: KeyHolder = GeneratedKeyHolder()
-        val psc: (Connection) -> PreparedStatement = { connection: Connection ->
-            val ps = connection
-                    .prepareStatement("insert into товар (название, стоимость, фото) values (?,?,?)")
-            ps.setString(1, dessert.name)
-            ps.setDouble(2, dessert.cost)
-            ps.setBytes(3, dessert.photo)
-            ps
-        }
-        jdbcTemplate.update(psc, keyHolder)
-        return jdbcTemplate.update("insert into десерт (id, id_товара, калории, вес) values (?,?,?,?)",
-                keyHolder.key, keyHolder.key, dessert.calories, dessert.weight)
+class JdbcDessertRepository(private val jdbcTemplate: JdbcTemplate,
+                            private val rowMapper: DessertMapper,
+                            private val dataSource: DataSource) : DessertRepository {
+
+    private lateinit var jdbcInsertProduct: SimpleJdbcInsert
+    private lateinit var jdbcInsertDesert: SimpleJdbcInsert
+    private val cache: HashMap<Long, Address> = HashMap()
+
+    @PostConstruct
+    fun init() {
+        jdbcInsertProduct = SimpleJdbcInsert(dataSource)
+                .withTableName("товар").usingGeneratedKeyColumns("id")
+        jdbcInsertDesert = SimpleJdbcInsert(dataSource)
+                .withTableName("десерт").usingGeneratedKeyColumns("id")
+    }
+
+    override fun save(dessert: Dessert): Long {
+        val productParameters = HashMap<String, Any?>()
+        val dessertParameters = HashMap<String, Any?>()
+        productParameters["название"] = dessert.name
+        productParameters["стоимость"] = dessert.cost
+        productParameters["фото"] = dessert.photo
+        dessert.id = jdbcInsertProduct.executeAndReturnKey(productParameters) as Long
+        dessertParameters["id"] = dessert.id
+        dessertParameters["id_товара"] = dessert.id
+        dessertParameters["калории"] = dessert.calories
+        dessertParameters["вес"] = dessert.weight
+        jdbcInsertDesert.execute(dessertParameters)
+        return dessert.id
     }
 
     override fun update(dessert: Dessert): Int {

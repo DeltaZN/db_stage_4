@@ -4,7 +4,7 @@ import ru.itmo.coffee.store.dao.Customer
 
 
 interface CustomerRepository {
-    fun save(customer: Customer): Int
+    fun save(customer: Customer): Long
     fun update(customer: Customer): Int
     fun deleteById(id: Long): Int
     fun findAll(): List<Customer>
