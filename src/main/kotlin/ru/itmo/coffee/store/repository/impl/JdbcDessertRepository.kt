@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
+import org.springframework.stereotype.Repository
 import ru.itmo.coffee.store.dao.Address
 import ru.itmo.coffee.store.dao.Dessert
 import ru.itmo.coffee.store.repository.DessertRepository
@@ -15,9 +16,12 @@ import java.sql.PreparedStatement
 import javax.annotation.PostConstruct
 import javax.sql.DataSource
 
-class JdbcDessertRepository(private val jdbcTemplate: JdbcTemplate,
-                            private val rowMapper: DessertMapper,
-                            private val dataSource: DataSource) : DessertRepository {
+@Repository
+class JdbcDessertRepository(
+        private val jdbcTemplate: JdbcTemplate,
+        private val rowMapper: DessertMapper,
+        private val dataSource: DataSource
+) : DessertRepository {
 
     private lateinit var jdbcInsertProduct: SimpleJdbcInsert
     private lateinit var jdbcInsertDesert: SimpleJdbcInsert

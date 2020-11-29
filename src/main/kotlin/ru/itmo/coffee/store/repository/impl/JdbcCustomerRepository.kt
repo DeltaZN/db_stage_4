@@ -13,10 +13,12 @@ import javax.sql.DataSource
 
 
 @Repository
-class JdbcCustomerRepository(private val jdbcTemplate: JdbcTemplate,
-                             private val rowMapper: CustomerMapper,
-                             private val addressRepository: AddressRepository,
-                             private val dataSource: DataSource) : CustomerRepository {
+class JdbcCustomerRepository(
+        private val jdbcTemplate: JdbcTemplate,
+        private val rowMapper: CustomerMapper,
+        private val addressRepository: AddressRepository,
+        private val dataSource: DataSource
+) : CustomerRepository {
 
     private lateinit var jdbcInsert: SimpleJdbcInsert
     private val cache: HashMap<Long, Address> = HashMap()

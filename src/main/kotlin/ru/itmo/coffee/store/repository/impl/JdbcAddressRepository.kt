@@ -1,8 +1,6 @@
 package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
-import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
 import ru.itmo.coffee.store.dao.Address
@@ -13,8 +11,11 @@ import javax.sql.DataSource
 
 
 @Repository
-class JdbcAddressRepository(private val jdbcTemplate: JdbcTemplate, private val rowMapper: AddressMapper,
-                            private val dataSource: DataSource) : AddressRepository {
+class JdbcAddressRepository(
+        private val jdbcTemplate: JdbcTemplate,
+        private val rowMapper: AddressMapper,
+        private val dataSource: DataSource
+) : AddressRepository {
 
     private lateinit var jdbcInsert: SimpleJdbcInsert
     private val cache: HashMap<Long, Address> = HashMap()
@@ -43,6 +44,7 @@ class JdbcAddressRepository(private val jdbcTemplate: JdbcTemplate, private val 
     }
 
     override fun update(address: Address): Int {
+        cache[address.id] = address
         return jdbcTemplate.update(
                 "update адрес set страна = ?, субъект = ?, муниципальный_район = ?, поселение = ?," +
                         " населенный_пункт = ?, планировочная_структура = ?, улица = ?, номер_земельного_участка = ?," +

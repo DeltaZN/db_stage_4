@@ -1,3 +1,3 @@
 package ru.itmo.coffee.store.dao
 
-class Ingredient(val id: Long, name: String, cost: Double, volumeMl: Double)
+class Ingredient(var id: Long, val name: String, val cost: Double, val volumeMl: Double)

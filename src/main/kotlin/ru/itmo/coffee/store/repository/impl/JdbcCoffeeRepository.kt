@@ -2,6 +2,7 @@ package ru.itmo.coffee.store.repository.impl
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
+import org.springframework.stereotype.Repository
 import ru.itmo.coffee.store.dao.Address
 import ru.itmo.coffee.store.dao.Coffee
 import ru.itmo.coffee.store.repository.CoffeeRepository
@@ -10,9 +11,12 @@ import javax.annotation.PostConstruct
 import javax.sql.DataSource
 
 
-class JdbcCoffeeRepository(private val jdbcTemplate: JdbcTemplate,
-                           private val rowMapper: CoffeeMapper,
-                           private val dataSource: DataSource) : CoffeeRepository {
+@Repository
+class JdbcCoffeeRepository(
+        private val jdbcTemplate: JdbcTemplate,
+        private val rowMapper: CoffeeMapper,
+        private val dataSource: DataSource
+) : CoffeeRepository {
 
     private lateinit var jdbcInsertProduct: SimpleJdbcInsert
     private lateinit var jdbcInsertCoffee: SimpleJdbcInsert
