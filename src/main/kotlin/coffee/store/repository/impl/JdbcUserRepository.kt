@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
 import coffee.store.dao.Address
 import coffee.store.dao.User
-import coffee.store.repository.AddressRepository
+import coffee.store.repository.jpa.AddressJpaRepository
 import coffee.store.repository.UserRepository
 import coffee.store.repository.mapper.UserMapper
 import org.springframework.dao.EmptyResultDataAccessException
@@ -19,7 +19,7 @@ import kotlin.collections.HashMap
 class JdbcUserRepository(
         private val jdbcTemplate: JdbcTemplate,
         private val rowMapper: UserMapper,
-        private val addressRepository: AddressRepository,
+        private val addressRepository: AddressJpaRepository,
         private val dataSource: DataSource
 ) : UserRepository {
 
@@ -33,10 +33,7 @@ class JdbcUserRepository(
     }
 
     override fun save(user: User): Long {
-        user.address?.let {
-            if (it.id != 0L) addressRepository.update(it)
-            else addressRepository.save(it)
-        }
+        user.address?.let { addressRepository.save(it) }
         val parameters = HashMap<String, Any?>()
         parameters["имя"] = user.firstName
         parameters["фамилия"] = user.lastName

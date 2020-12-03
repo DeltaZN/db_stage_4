@@ -41,7 +41,7 @@ class JdbcAddressRepository(
         parameters["номер_земельного_участка"] = address.landPlot
         parameters["номер_здания"] = address.building
         parameters["номер_помещения"] = address.room
-        address.id = jdbcInsert.executeAndReturnKey(parameters).toLong()
+//        address.id = jdbcInsert.executeAndReturnKey(parameters).toLong()
         cache[address.id] = address
         return address.id
     }

@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
+import java.util.stream.Collectors
 
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
@@ -35,9 +36,11 @@ class AuthController(
         val jwt = jwtUtils.generateJwtToken(authentication)
         val userDetails = authentication.principal as UserDetailsImpl
         return ResponseEntity.ok<Any>(JwtResponse(
-                jwt,
                 userDetails.username,
-                userDetails.authorities,
+                userDetails.authorities.stream()
+                        .map { v -> v.authority }
+                        .collect(Collectors.toList()),
+                jwt,
         ))
     }
 

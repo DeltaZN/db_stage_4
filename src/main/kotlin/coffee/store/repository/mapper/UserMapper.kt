@@ -5,11 +5,13 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Component
 import coffee.store.dao.User
 import coffee.store.entity.Sex
-import coffee.store.repository.AddressRepository
+import coffee.store.repository.jpa.AddressJpaRepository
 import java.sql.ResultSet
 
 @Component
-class UserMapper(private val addressRepository: AddressRepository) : RowMapper<User> {
+class UserMapper(
+        private val addressRepository: AddressJpaRepository
+) : RowMapper<User> {
     override fun mapRow(rs: ResultSet, rowNum: Int): User =
             User(
                     rs.getLong("id"),

@@ -9,7 +9,7 @@ import java.sql.ResultSet
 class DessertMapper : RowMapper<Dessert> {
     override fun mapRow(rs: ResultSet, rowNum: Int): Dessert =
             Dessert(
-                    rs.getLong("id"),
+                    rs.getLong("десерт.id"),
                     rs.getDouble("калории"),
                     rs.getDouble("вес"),
                     rs.getString("название"),

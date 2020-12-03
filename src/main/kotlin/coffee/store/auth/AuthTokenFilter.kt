@@ -32,7 +32,7 @@ class AuthTokenFilter(
                 SecurityContextHolder.getContext().authentication = authentication
             }
         } catch (e: Exception) {
-            logger.error("Cannot set user authentication: {}", e)
+            logger.error("Cannot set user authentication: ${e.message}")
         }
         filterChain.doFilter(request, response)
     }

@@ -63,11 +63,11 @@ class JdbcCoffeeRepository(
 
     override fun findAll(): List<Coffee> {
         return jdbcTemplate.query(
-                "select * from кофе", rowMapper)
+                "select * from кофе join товар on кофе.id_товара = товар.id", rowMapper)
     }
 
     override fun findById(id: Long): Coffee? {
         return jdbcTemplate.queryForObject(
-                "select * from кофе where id = ?", rowMapper, id)
+                "select * from кофе join товар on кофе.id_товара = товар.id where кофе.id = ?", rowMapper, id)
     }
 }

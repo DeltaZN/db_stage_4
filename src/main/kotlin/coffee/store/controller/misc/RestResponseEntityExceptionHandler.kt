@@ -1,4 +1,4 @@
-package coffee.store.controller
+package coffee.store.controller.misc
 
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpHeaders

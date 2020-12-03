@@ -10,7 +10,9 @@ import java.util.*
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/test")
-class TestController(private val addresses: JdbcAddressRepository) {
+class TestController(
+        private val addresses: JdbcAddressRepository
+) {
 
     @GetMapping("/all")
     fun allAccess(): String {

@@ -7,6 +7,7 @@ import org.springframework.boot.runApplication
 import coffee.store.dao.Address
 import coffee.store.dao.User
 import coffee.store.entity.Sex
+import coffee.store.repository.jpa.AddressJpaRepository
 import coffee.store.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
@@ -18,6 +19,7 @@ fun main(args: Array<String>) {
 @SpringBootApplication
 class Application(
         private val userRepository: UserRepository,
+        private val addressRepository: AddressJpaRepository,
         private val encoder: PasswordEncoder,
 ) : CommandLineRunner {
 
@@ -28,6 +30,7 @@ class Application(
         userRepository.save(customer2)
         userRepository.save(customer1)
         userRepository.findByPhone("123123")
+        println(customer1)
     }
 
 }

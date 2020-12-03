@@ -14,7 +14,7 @@ class CoffeeMapper(
 ) : RowMapper<Coffee> {
     override fun mapRow(rs: ResultSet, rowNum: Int): Coffee =
             Coffee(
-                    rs.getLong("id"),
+                    rs.getLong("кофе.id"),
                     rs.getString("название"),
                     rs.getDouble("стоимость"),
                     rs.getBytes("фото"),
