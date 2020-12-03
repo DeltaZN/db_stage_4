@@ -66,7 +66,7 @@ CREATE TABLE клиент
     email         TEXT UNIQUE,
     телефон       TEXT    NOT NULL UNIQUE,
     пароль        TEXT    NOT NULL,
-    роль        TEXT    NOT NULL
+    роль          TEXT    NOT NULL
 );
 
 CREATE TABLE кофе

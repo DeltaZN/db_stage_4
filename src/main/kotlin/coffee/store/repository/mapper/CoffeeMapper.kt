@@ -5,11 +5,12 @@ import org.springframework.stereotype.Component
 import coffee.store.dao.Coffee
 import coffee.store.repository.CoffeeComponentRepository
 import coffee.store.repository.UserRepository
+import coffee.store.repository.jpa.UserJpaRepository
 import java.sql.ResultSet
 
 @Component
 class CoffeeMapper(
-        private val userRepository: UserRepository,
+        private val userRepository: UserJpaRepository,
         private val coffeeComponentRepository: CoffeeComponentRepository,
 ) : RowMapper<Coffee> {
     override fun mapRow(rs: ResultSet, rowNum: Int): Coffee =

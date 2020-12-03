@@ -8,7 +8,7 @@ import coffee.store.payload.request.LoginRequest
 import coffee.store.payload.request.SignupRequest
 import coffee.store.payload.response.JwtResponse
 import coffee.store.payload.response.MessageResponse
-import coffee.store.repository.UserRepository
+import coffee.store.repository.jpa.UserJpaRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -24,7 +24,7 @@ import java.util.stream.Collectors
 @RequestMapping("/api/auth")
 class AuthController(
         private val authenticationManager: AuthenticationManager,
-        private val userRepository: UserRepository,
+        private val userRepository: UserJpaRepository,
         private val encoder: PasswordEncoder,
         private val jwtUtils: JwtUtils,
 ) {
