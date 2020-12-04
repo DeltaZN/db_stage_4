@@ -3,7 +3,7 @@ package coffee.store.controller
 import coffee.store.auth.ERole
 import coffee.store.auth.JwtUtils
 import coffee.store.auth.UserDetailsImpl
-import coffee.store.dao.User
+import coffee.store.entity.User
 import coffee.store.payload.request.LoginRequest
 import coffee.store.payload.request.SignupRequest
 import coffee.store.payload.response.JwtResponse

@@ -1,7 +1,7 @@
 package coffee.store.controller
 
-import coffee.store.dao.Address
-import coffee.store.repository.impl.JdbcAddressRepository
+import coffee.store.entity.Address
+import coffee.store.repository.jpa.AddressJpaRepository
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -11,7 +11,7 @@ import java.util.*
 @RestController
 @RequestMapping("/api/test")
 class TestController(
-        private val addresses: JdbcAddressRepository
+        private val addresses: AddressJpaRepository
 ) {
 
     @GetMapping("/all")
@@ -40,10 +40,5 @@ class TestController(
     @GetMapping("/{id}")
     fun test(@PathVariable id: Long): Optional<Address> {
         return addresses.findById(id)
-    }
-
-    @GetMapping("/mnogo")
-    fun test2(): List<Address> {
-        return addresses.findAll()
     }
 }

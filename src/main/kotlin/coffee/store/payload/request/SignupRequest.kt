@@ -1,6 +1,6 @@
 package coffee.store.payload.request
 
-import coffee.store.entity.Sex
+import coffee.store.model.Sex
 
 data class SignupRequest(
         val phone: String,

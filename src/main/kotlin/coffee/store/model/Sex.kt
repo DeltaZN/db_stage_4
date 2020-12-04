@@ -1,4 +1,4 @@
-package coffee.store.entity
+package coffee.store.model
 
 enum class Sex {
     F,

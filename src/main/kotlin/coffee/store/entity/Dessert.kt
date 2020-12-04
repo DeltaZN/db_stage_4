@@ -1,4 +1,4 @@
-package coffee.store.dao
+package coffee.store.entity
 
 import javax.persistence.Column
 import javax.persistence.Entity

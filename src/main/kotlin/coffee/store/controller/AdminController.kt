@@ -1,6 +1,6 @@
 package coffee.store.controller
 
-import coffee.store.dao.User
+import coffee.store.entity.User
 import coffee.store.repository.jpa.UserJpaRepository
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping

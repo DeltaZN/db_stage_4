@@ -1,6 +1,6 @@
 package coffee.store.auth
 
-import coffee.store.dao.User
+import coffee.store.entity.User
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority

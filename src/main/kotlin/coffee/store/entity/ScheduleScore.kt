@@ -1,4 +1,4 @@
-package coffee.store.dao
+package coffee.store.entity
 
 class ScheduleScore(id: Long, score: Int, comment: String?, val schedule: Schedule) :
         Score(id, score, comment)

@@ -1,7 +1,7 @@
-package coffee.store.dao
+package coffee.store.entity
 
 import coffee.store.auth.ERole
-import coffee.store.entity.Sex
+import coffee.store.model.Sex
 import java.time.LocalDate
 import javax.persistence.*
 

@@ -1,9 +1,4 @@
 package coffee.store.entity
 
-import coffee.store.dao.User
-
-class Schedule(var id: Long,
-               var name: String?,
-               var author: User,
-               var description: String?,
-               var status: String)
+class Schedule(val id: Long, val name: String?, val author: User, val description: String?,
+               val status: String)

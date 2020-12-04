@@ -1,6 +1,6 @@
 package coffee.store.repository.jpa
 
-import coffee.store.dao.User
+import coffee.store.entity.User
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import java.util.*

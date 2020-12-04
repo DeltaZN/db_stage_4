@@ -1,4 +1,4 @@
-package coffee.store.dao
+package coffee.store.entity
 
 import java.time.LocalDateTime
 

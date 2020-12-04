@@ -1,6 +1,6 @@
 package coffee.store.repository.jpa
 
-import coffee.store.dao.Address
+import coffee.store.entity.Address
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
