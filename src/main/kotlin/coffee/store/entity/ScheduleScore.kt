@@ -1,4 +1,15 @@
 package coffee.store.entity
 
-class ScheduleScore(id: Long, score: Int, comment: String?, val schedule: Schedule) :
-        Score(id, score, comment)
+import javax.persistence.*
+
+@Entity
+@Table(name = "оценка_расписания")
+@PrimaryKeyJoinColumn(name = "id_оценки")
+class ScheduleScore(
+        id: Long = 0,
+        score: Int = 0,
+        comment: String? = null,
+        @ManyToOne
+        @JoinColumn(name = "id_кофе")
+        val schedule: Schedule? = null,
+) : Score(id, score, comment)
