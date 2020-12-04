@@ -1,4 +1,4 @@
-package coffee.store.repository.jpa
+package coffee.store.repository
 
 import coffee.store.entity.User
 import org.springframework.data.jpa.repository.Query

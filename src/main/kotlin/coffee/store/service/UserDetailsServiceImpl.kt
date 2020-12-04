@@ -1,7 +1,7 @@
 package coffee.store.service
 
 import coffee.store.auth.UserDetailsImpl
-import coffee.store.repository.jpa.UserJpaRepository
+import coffee.store.repository.UserJpaRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException

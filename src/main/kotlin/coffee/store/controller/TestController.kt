@@ -1,7 +1,7 @@
 package coffee.store.controller
 
 import coffee.store.entity.Address
-import coffee.store.repository.jpa.AddressJpaRepository
+import coffee.store.repository.AddressJpaRepository
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*

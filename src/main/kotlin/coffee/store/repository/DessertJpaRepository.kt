@@ -1,4 +1,4 @@
-package coffee.store.repository.jpa
+package coffee.store.repository
 
 import coffee.store.entity.Dessert
 import org.springframework.data.repository.CrudRepository

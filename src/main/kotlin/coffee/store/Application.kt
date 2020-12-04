@@ -7,6 +7,8 @@ import org.springframework.boot.runApplication
 import coffee.store.entity.Address
 import coffee.store.entity.User
 import coffee.store.model.Sex
+import coffee.store.repository.AddressJpaRepository
+import coffee.store.repository.UserJpaRepository
 import coffee.store.repository.jpa.*
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate

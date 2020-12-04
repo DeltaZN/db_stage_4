@@ -1,7 +1,7 @@
 package coffee.store.controller
 
 import coffee.store.entity.Ingredient
-import coffee.store.repository.jpa.IngredientJpaRepository
+import coffee.store.repository.IngredientJpaRepository
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
