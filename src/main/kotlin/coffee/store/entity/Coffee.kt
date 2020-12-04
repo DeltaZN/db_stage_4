@@ -17,6 +17,6 @@ class Coffee(
         @ManyToOne
         @JoinColumn(name = "id_автора")
         val author: User? = null,
-        @OneToMany
+        @OneToMany(fetch = FetchType.LAZY)
         val components: MutableList<CoffeeComponent> = mutableListOf(),
 ) : Product(id, name, cost, photo)

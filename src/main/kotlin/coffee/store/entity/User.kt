@@ -1,6 +1,5 @@
 package coffee.store.entity
 
-import coffee.store.auth.ERole
 import coffee.store.model.Sex
 import java.time.LocalDate
 import javax.persistence.*
@@ -29,7 +28,9 @@ data class User(
         val phone: String = "",
         @Column(name = "пароль")
         val password: String = "",
-        @Column(name = "роль")
-        @Enumerated(EnumType.STRING)
-        val role: ERole = ERole.ROLE_CUSTOMER,
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "роли_пользователей",
+                joinColumns = [JoinColumn(name = "id_клиента")],
+                inverseJoinColumns = [JoinColumn(name = "id_роли")])
+        val role: Set<Role> = emptySet(),
 )

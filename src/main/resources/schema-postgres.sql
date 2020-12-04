@@ -63,16 +63,28 @@ CREATE TABLE клиент
     id_адреса     INTEGER REFERENCES адрес (id),
     email         TEXT UNIQUE,
     телефон       TEXT    NOT NULL UNIQUE,
-    пароль        TEXT    NOT NULL,
-    роль          TEXT    NOT NULL
+    пароль        TEXT    NOT NULL
+);
+
+CREATE TABLE роль
+(
+    id       SERIAL PRIMARY KEY,
+    название TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE роли_пользователей
+(
+    id_клиента INTEGER NOT NULL,
+    id_роли    INTEGER NOT NULL,
+    PRIMARY KEY (id_клиента, id_роли)
 );
 
 CREATE TABLE кофе
 (
     id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE NOT NULL UNIQUE,
-    тип       CHAR                                            NOT NULL CHECK (тип IN ('u', 's') ),
-    состояние TEXT                                            NOT NULL,
-    id_автора INTEGER REFERENCES клиент (id)                  NOT NULL
+    тип       CHAR                                                        NOT NULL CHECK (тип IN ('u', 's') ),
+    состояние TEXT                                                        NOT NULL,
+    id_автора INTEGER REFERENCES клиент (id)                              NOT NULL
 );
 
 CREATE TABLE ингредиент
@@ -87,9 +99,9 @@ CREATE TABLE компонент_кофе
 (
     id                 SERIAL PRIMARY KEY,
     id_кофе            INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
-    id_ингредиента     INTEGER REFERENCES ингредиент (id)             NOT NULL,
-    количество         INTEGER                                        NOT NULL CHECK (количество > 0),
-    порядок_добавления INTEGER                                        NOT NULL CHECK (порядок_добавления >= 0)
+    id_ингредиента     INTEGER REFERENCES ингредиент (id)                    NOT NULL,
+    количество         INTEGER                                               NOT NULL CHECK (количество > 0),
+    порядок_добавления INTEGER                                               NOT NULL CHECK (порядок_добавления >= 0)
 );
 
 CREATE TABLE заказ
@@ -139,7 +151,7 @@ CREATE TABLE оценка
 CREATE TABLE оценка_кофе
 (
     id        INTEGER PRIMARY KEY,
-    id_оценки INTEGER REFERENCES оценка (id)                 NOT NULL UNIQUE,
+    id_оценки INTEGER REFERENCES оценка (id)                        NOT NULL UNIQUE,
     id_кофе   INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
     CONSTRAINT оценка CHECK (id = id_оценки)
 );
@@ -162,6 +174,6 @@ CREATE TABLE любимые_расписания
 CREATE TABLE любимые_кофе
 (
     id         SERIAL PRIMARY KEY,
-    id_клиента INTEGER REFERENCES клиент (id)                 NOT NULL,
+    id_клиента INTEGER REFERENCES клиент (id)                        NOT NULL,
     id_кофе    INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL
 );

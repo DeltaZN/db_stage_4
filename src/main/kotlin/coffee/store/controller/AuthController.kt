@@ -8,6 +8,7 @@ import coffee.store.payload.request.LoginRequest
 import coffee.store.payload.request.SignupRequest
 import coffee.store.payload.response.JwtResponse
 import coffee.store.payload.response.MessageResponse
+import coffee.store.repository.RoleJpaRepository
 import coffee.store.repository.UserJpaRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -25,6 +26,7 @@ import java.util.stream.Collectors
 class AuthController(
         private val authenticationManager: AuthenticationManager,
         private val userRepository: UserJpaRepository,
+        private val roleJpaRepository: RoleJpaRepository,
         private val encoder: PasswordEncoder,
         private val jwtUtils: JwtUtils,
 ) {
@@ -53,7 +55,8 @@ class AuthController(
 
         val user = User(0, signUpRequest.name, signUpRequest.surname, signUpRequest.sex,
                 null, null, null,
-                signUpRequest.phone, encoder.encode(signUpRequest.password), ERole.ROLE_CUSTOMER)
+                signUpRequest.phone, encoder.encode(signUpRequest.password),
+                setOf(roleJpaRepository.findRoleByName(ERole.ROLE_CUSTOMER).get()))
         userRepository.save(user)
         return ResponseEntity.ok(MessageResponse("User registered successfully!"))
     }
