@@ -10,6 +10,7 @@ import coffee.store.dao.User
 import coffee.store.entity.Sex
 import coffee.store.repository.jpa.AddressJpaRepository
 import coffee.store.repository.UserRepository
+import coffee.store.repository.jpa.CoffeeJpaRepository
 import coffee.store.repository.jpa.DessertJpaRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
@@ -21,7 +22,7 @@ fun main(args: Array<String>) {
 @SpringBootApplication
 class Application(
         private val userRepository: UserRepository,
-        private val dessertJpaRepository: DessertJpaRepository,
+        private val coffeeJpaRepository: CoffeeJpaRepository,
         private val encoder: PasswordEncoder,
 ) : CommandLineRunner {
 
@@ -32,7 +33,7 @@ class Application(
         userRepository.save(customer2)
         userRepository.save(customer1)
         userRepository.findByPhone("123123")
-        dessertJpaRepository.save(Dessert(calories = 1.0, weight = 2.0, name = "TEST", cost = 10.0))
+        println(coffeeJpaRepository.findAll())
     }
 
 }

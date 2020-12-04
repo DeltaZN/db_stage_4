@@ -40,7 +40,7 @@ class JdbcCoffeeRepository(
         coffeeParameters["id"] = coffee.id
         coffeeParameters["id_товара"] = coffee.id
         coffeeParameters["тип"] = coffee.type
-        coffeeParameters["состояние"] = coffee.state
+        coffeeParameters["состояние"] = coffee.status
         coffeeParameters["id_автора"] = coffee.author?.id
         jdbcInsertCoffee.execute(coffeeParameters)
         return coffee.id
@@ -52,7 +52,7 @@ class JdbcCoffeeRepository(
                 coffee.name, coffee.cost, coffee.photo, coffee.id)
         updated += jdbcTemplate.update(
                 "update кофе set тип = ?, состояние = ?, id_автора = ? where id = ?",
-                coffee.type, coffee.state, coffee.author?.id, coffee.id)
+                coffee.type, coffee.status, coffee.author?.id, coffee.id)
         return updated
     }
 

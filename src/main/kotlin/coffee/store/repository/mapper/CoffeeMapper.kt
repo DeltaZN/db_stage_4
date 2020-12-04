@@ -22,6 +22,6 @@ class CoffeeMapper(
                     rs.getString("тип").first(),
                     rs.getString("состояние"),
                     userRepository.findById(rs.getLong("id_автора")).get(),
-                    coffeeComponentRepository.findAllByCoffeeId(rs.getLong("id")),
+//                    coffeeComponentRepository.findAllByCoffeeId(rs.getLong("id")),
             )
 }

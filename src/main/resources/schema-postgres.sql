@@ -69,12 +69,10 @@ CREATE TABLE клиент
 
 CREATE TABLE кофе
 (
-    id        INTEGER PRIMARY KEY,
-    id_товара INTEGER REFERENCES товар (id) ON DELETE CASCADE NOT NULL UNIQUE,
+    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE NOT NULL UNIQUE,
     тип       CHAR                                            NOT NULL CHECK (тип IN ('u', 's') ),
     состояние TEXT                                            NOT NULL,
     id_автора INTEGER REFERENCES клиент (id)                  NOT NULL
-        CONSTRAINT товар CHECK (id = id_товара)
 );
 
 CREATE TABLE ингредиент
@@ -88,7 +86,7 @@ CREATE TABLE ингредиент
 CREATE TABLE компонент_кофе
 (
     id                 SERIAL PRIMARY KEY,
-    id_кофе            INTEGER REFERENCES кофе (id) ON DELETE CASCADE NOT NULL,
+    id_кофе            INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
     id_ингредиента     INTEGER REFERENCES ингредиент (id)             NOT NULL,
     количество         INTEGER                                        NOT NULL CHECK (количество > 0),
     порядок_добавления INTEGER                                        NOT NULL CHECK (порядок_добавления >= 0)
@@ -142,7 +140,7 @@ CREATE TABLE оценка_кофе
 (
     id        INTEGER PRIMARY KEY,
     id_оценки INTEGER REFERENCES оценка (id)                 NOT NULL UNIQUE,
-    id_кофе   INTEGER REFERENCES кофе (id) ON DELETE CASCADE NOT NULL,
+    id_кофе   INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
     CONSTRAINT оценка CHECK (id = id_оценки)
 );
 
@@ -165,5 +163,5 @@ CREATE TABLE любимые_кофе
 (
     id         SERIAL PRIMARY KEY,
     id_клиента INTEGER REFERENCES клиент (id)                 NOT NULL,
-    id_кофе    INTEGER REFERENCES кофе (id) ON DELETE CASCADE NOT NULL
+    id_кофе    INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL
 );
