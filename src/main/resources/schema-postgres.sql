@@ -48,11 +48,9 @@ CREATE TABLE товар
 
 CREATE TABLE десерт
 (
-    id        INTEGER PRIMARY KEY,
-    id_товара INTEGER REFERENCES товар (id) ON DELETE CASCADE NOT NULL UNIQUE,
-    калории   FLOAT                                           NOT NULL,
-    вес       FLOAT,
-    CONSTRAINT товар CHECK (id = id_товара)
+    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE NOT NULL UNIQUE,
+    калории   FLOAT                                                       NOT NULL,
+    вес       FLOAT
 );
 
 CREATE TABLE клиент

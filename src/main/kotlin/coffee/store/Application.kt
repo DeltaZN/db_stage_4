@@ -5,10 +5,12 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import coffee.store.dao.Address
+import coffee.store.dao.Dessert
 import coffee.store.dao.User
 import coffee.store.entity.Sex
 import coffee.store.repository.jpa.AddressJpaRepository
 import coffee.store.repository.UserRepository
+import coffee.store.repository.jpa.DessertJpaRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 
@@ -19,7 +21,7 @@ fun main(args: Array<String>) {
 @SpringBootApplication
 class Application(
         private val userRepository: UserRepository,
-        private val addressRepository: AddressJpaRepository,
+        private val dessertJpaRepository: DessertJpaRepository,
         private val encoder: PasswordEncoder,
 ) : CommandLineRunner {
 
@@ -30,7 +32,7 @@ class Application(
         userRepository.save(customer2)
         userRepository.save(customer1)
         userRepository.findByPhone("123123")
-        println(customer1)
+        dessertJpaRepository.save(Dessert(calories = 1.0, weight = 2.0, name = "TEST", cost = 10.0))
     }
 
 }
