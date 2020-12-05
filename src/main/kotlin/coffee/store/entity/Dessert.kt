@@ -13,7 +13,7 @@ class Dessert(
         @Column(name = "калории")
         val calories: Double = 0.0,
         @Column(name = "вес")
-        val weight: Double? = 0.0,
+        val weight: Double = 0.0,
         name: String = "",
         cost: Double = 0.0,
         photo: ByteArray? = null
