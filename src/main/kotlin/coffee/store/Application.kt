@@ -5,6 +5,7 @@ import coffee.store.entity.Address
 import coffee.store.entity.User
 import coffee.store.model.Sex
 import coffee.store.repository.AddressJpaRepository
+import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.RoleJpaRepository
 import coffee.store.repository.UserJpaRepository
 import org.springframework.boot.CommandLineRunner
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
+import javax.transaction.Transactional
 
 fun main(args: Array<String>) {
     runApplication<Application>(*args)

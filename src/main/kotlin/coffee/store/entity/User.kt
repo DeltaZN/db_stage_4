@@ -28,9 +28,19 @@ data class User(
         val phone: String = "",
         @Column(name = "пароль")
         val password: String = "",
-        @ManyToMany(fetch = FetchType.LAZY)
+        @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(name = "роли_пользователей",
                 joinColumns = [JoinColumn(name = "id_клиента")],
                 inverseJoinColumns = [JoinColumn(name = "id_роли")])
-        val role: Set<Role> = emptySet(),
+        val roles: Set<Role> = emptySet(),
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "любимые_кофе",
+                joinColumns = [JoinColumn(name = "id_клиента")],
+                inverseJoinColumns = [JoinColumn(name = "id_кофе")])
+        val favoriteCoffees: Set<Coffee> = emptySet(),
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(name = "любимые_расписания",
+                joinColumns = [JoinColumn(name = "id_клиента")],
+                inverseJoinColumns = [JoinColumn(name = "id_расписания")])
+        val favoriteSchedules: Set<Coffee> = emptySet(),
 )

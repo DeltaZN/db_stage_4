@@ -20,13 +20,13 @@ class TestController(
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('CUSTOMER') or hasRole('BARISTA') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     fun userAccess(): String {
         return "User Content."
     }
 
     @GetMapping("/barista")
-    @PreAuthorize("hasRole('BARISTA') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('BARISTA')")
     fun baristaAccess(): String {
         return "Barista Content."
     }

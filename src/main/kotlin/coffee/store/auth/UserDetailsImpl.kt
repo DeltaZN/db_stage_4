@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.util.stream.Collectors
 
 
 class UserDetailsImpl(
@@ -19,7 +20,9 @@ class UserDetailsImpl(
 
     companion object {
         fun build(user: User): UserDetailsImpl {
-            val authorities: List<GrantedAuthority> = listOf(SimpleGrantedAuthority(user.role.toString()))
+            val authorities: List<GrantedAuthority> = user.roles.stream()
+                    .map { role -> SimpleGrantedAuthority(role.name.toString()) }
+                    .collect(Collectors.toList())
             return UserDetailsImpl(
                     user.id,
                     user.phone,

@@ -1,3 +1,5 @@
+-- noinspection NonAsciiCharactersForFile
+
 DROP TABLE IF EXISTS любимые_расписания;
 DROP TABLE IF EXISTS любимые_кофе;
 DROP TABLE IF EXISTS компонент_кофе;
@@ -13,6 +15,8 @@ DROP TABLE IF EXISTS десерт;
 DROP TABLE IF EXISTS кофе;
 DROP TABLE IF EXISTS товар;
 DROP TABLE IF EXISTS клиент;
+DROP TABLE IF EXISTS роли_пользователей;
+DROP TABLE IF EXISTS роль;
 DROP TABLE IF EXISTS кофейня;
 DROP TABLE IF EXISTS адрес;
 
@@ -48,8 +52,8 @@ CREATE TABLE товар
 
 CREATE TABLE десерт
 (
-    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE NOT NULL UNIQUE,
-    калории   FLOAT                                                       NOT NULL,
+    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE,
+    калории   FLOAT NOT NULL,
     вес       FLOAT
 );
 
@@ -81,10 +85,10 @@ CREATE TABLE роли_пользователей
 
 CREATE TABLE кофе
 (
-    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE NOT NULL UNIQUE,
-    тип       CHAR                                                        NOT NULL CHECK (тип IN ('u', 's') ),
-    состояние TEXT                                                        NOT NULL,
-    id_автора INTEGER REFERENCES клиент (id)                              NOT NULL
+    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE,
+    тип       CHAR                           NOT NULL CHECK (тип IN ('u', 's') ),
+    состояние TEXT                           NOT NULL,
+    id_автора INTEGER REFERENCES клиент (id) NOT NULL
 );
 
 CREATE TABLE ингредиент
@@ -150,30 +154,26 @@ CREATE TABLE оценка
 
 CREATE TABLE оценка_кофе
 (
-    id        INTEGER PRIMARY KEY,
-    id_оценки INTEGER REFERENCES оценка (id)                        NOT NULL UNIQUE,
-    id_кофе   INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
-    CONSTRAINT оценка CHECK (id = id_оценки)
+    id_оценки INTEGER PRIMARY KEY REFERENCES оценка (id),
+    id_кофе   INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE оценка_расписания
 (
-    id            INTEGER PRIMARY KEY,
-    id_оценки     INTEGER REFERENCES оценка (id)                       NOT NULL UNIQUE,
-    id_расписания INTEGER REFERENCES расписание (id) ON DELETE CASCADE NOT NULL,
-    CONSTRAINT оценка CHECK (id = id_оценки)
+    id_оценки     INTEGER PRIMARY KEY REFERENCES оценка (id),
+    id_расписания INTEGER REFERENCES расписание (id) ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE любимые_расписания
 (
-    id            SERIAL PRIMARY KEY,
     id_клиента    INTEGER REFERENCES клиент (id)                       NOT NULL,
-    id_расписания INTEGER REFERENCES расписание (id) ON DELETE CASCADE NOT NULL
+    id_расписания INTEGER REFERENCES расписание (id) ON DELETE CASCADE NOT NULL,
+    PRIMARY KEY (id_клиента, id_расписания)
 );
 
 CREATE TABLE любимые_кофе
 (
-    id         SERIAL PRIMARY KEY,
     id_клиента INTEGER REFERENCES клиент (id)                        NOT NULL,
-    id_кофе    INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL
+    id_кофе    INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
+    PRIMARY KEY (id_клиента, id_кофе)
 );

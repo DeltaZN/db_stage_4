@@ -1,5 +1,6 @@
 package coffee.store.entity
 
+import coffee.store.model.OrderStatus
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -9,8 +10,9 @@ data class Order(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
+        @Enumerated(EnumType.STRING)
         @Column(name = "статус_заказа")
-        val status: String = "",
+        val status: OrderStatus = OrderStatus.FORMING,
         @ManyToOne
         @JoinColumn(name = "id_клиента")
         val user: User? = null,
