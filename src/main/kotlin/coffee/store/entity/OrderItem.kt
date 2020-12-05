@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "компонент_заказа")
-data class OrderComponent(
+data class OrderItem(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,

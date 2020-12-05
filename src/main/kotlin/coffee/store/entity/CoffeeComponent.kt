@@ -13,7 +13,7 @@ data class CoffeeComponent(
         val coffee: Coffee? = null,
         @ManyToOne
         @JoinColumn(name = "id_ингредиента")
-        val ingredient: Ingredient? = null,
+        val ingredient: Ingredient = Ingredient(),
         @Column(name = "количество")
         val quantity: Int = 0,
         @Column(name = "порядок_добавления")

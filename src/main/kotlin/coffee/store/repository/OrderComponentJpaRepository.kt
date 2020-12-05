@@ -1,6 +1,6 @@
 package coffee.store.repository
 
-import coffee.store.entity.OrderComponent
+import coffee.store.entity.OrderItem
 import org.springframework.data.repository.CrudRepository
 
-interface OrderComponentJpaRepository : CrudRepository<OrderComponent, Long>
+interface OrderComponentJpaRepository : CrudRepository<OrderItem, Long>

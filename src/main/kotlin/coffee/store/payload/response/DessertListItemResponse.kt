@@ -4,7 +4,5 @@ class DessertListItemResponse(
         val id: Long,
         val name: String,
         val cost: Double,
-        val weight: Double,
-        val calories: Double,
-        val photo: ByteArray? = null,
+        val smallPhoto: ByteArray? = null,
 )

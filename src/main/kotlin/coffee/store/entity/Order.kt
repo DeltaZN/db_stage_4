@@ -12,7 +12,7 @@ data class Order(
         val id: Long = 0,
         @Enumerated(EnumType.STRING)
         @Column(name = "статус_заказа")
-        val status: OrderStatus = OrderStatus.FORMING,
+        var status: OrderStatus = OrderStatus.FORMING,
         @ManyToOne
         @JoinColumn(name = "id_клиента")
         val user: User? = null,
@@ -23,6 +23,8 @@ data class Order(
         val discount: Double? = 0.0,
         @Column(name = "стоимость")
         val cost: Double? = 0.0,
-        @Column(name = "время формирования")
-        val orderTime: LocalDateTime? = null
+        @Column(name = "время_формирования")
+        val orderTime: LocalDateTime? = null,
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+        val items: MutableList<OrderItem> = mutableListOf(),
 )
