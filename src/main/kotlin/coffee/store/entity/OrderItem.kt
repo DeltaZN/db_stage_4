@@ -14,4 +14,6 @@ data class OrderItem(
         @ManyToOne
         @JoinColumn(name = "id_товара")
         val product: Product? = null,
+        @Column(name = "количество")
+        val quantity: Int = 0,
 )

@@ -26,5 +26,5 @@ data class Order(
         @Column(name = "время_формирования")
         val orderTime: LocalDateTime? = null,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-        val items: MutableList<OrderItem> = mutableListOf(),
+        var items: List<OrderItem> = mutableListOf(),
 )

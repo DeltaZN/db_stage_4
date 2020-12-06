@@ -36,16 +36,6 @@ class CustomerController(
             orderJpaRepository.findOrderByUser((auth.principal as UserDetailsImpl).id)
                     .map { o -> OrderListItemResponse(o.id, o.status, o.cost, o.discount, o.orderTime) }
 
-    @GetMapping("custom_coffees")
-    fun getCustomCoffees(auth: Authentication): List<CoffeeListItemResponse> =
-            coffeeJpaRepository.findUserCoffees((auth.principal as UserDetailsImpl).id)
-                    .map { c -> CoffeeListItemResponse(c.id, c.name, c.cost, c.type, null, c.photo) }
-
-    @GetMapping("custom_schedules")
-    fun getCustomSchedules(auth: Authentication): List<ScheduleListItemResponse> =
-            scheduleJpaRepository.findUserSchedules((auth.principal as UserDetailsImpl).id)
-                    .map { s -> ScheduleListItemResponse(s.id, s.name, s.description, s.status) }
-
     @GetMapping("favorite_coffees")
     @Transactional
     fun getFavoriteCoffees(auth: Authentication): List<CoffeeListItemResponse> =

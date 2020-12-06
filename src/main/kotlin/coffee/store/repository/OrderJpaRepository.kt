@@ -13,13 +13,13 @@ interface OrderJpaRepository : CrudRepository<Order, Long> {
     fun findOrderByUser(userId: Long): Iterable<Order>
 
     @Query(
-            value = "select * from заказ where статус_заказа != 'GIVEN' and id_кофейни = ?",
-            countQuery = "select count(*) from заказ where статус_заказа != 'GIVEN' and id_кофейни = ?",
+            value = "select * from заказ where статус_заказа not in ('GIVEN','TEMPLATE') and id_кофейни = ?",
+            countQuery = "select count(*) from заказ where статус_заказа not in ('GIVEN','TEMPLATE') and id_кофейни = ?",
             nativeQuery = true)
     fun findIncompleteOrders(coffeeStoreId: Long): Iterable<Order>
 
     @Query(
-            value = "select * from заказ where статус_заказа != 'GIVEN' and id = ?",
+            value = "select * from заказ where статус_заказа not in ('GIVEN','TEMPLATE') and id = ?",
             countQuery = "select 1",
             nativeQuery = true)
     fun findIncompleteOrder(orderId: Long): Optional<Order>

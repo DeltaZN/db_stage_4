@@ -17,10 +17,10 @@ class Coffee(
         val type: CoffeeType = CoffeeType.u,
         @Enumerated(EnumType.STRING)
         @Column(name = "состояние")
-        val status: CoffeeStatus = CoffeeStatus.HIDDEN,
+        var status: CoffeeStatus = CoffeeStatus.HIDDEN,
         @ManyToOne
         @JoinColumn(name = "id_автора")
-        val author: User? = null,
+        var author: User? = null,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "coffee")
-        val components: MutableList<CoffeeComponent> = mutableListOf(),
+        var components: List<CoffeeComponent> = mutableListOf(),
 ) : Product(id, name, cost, photo)

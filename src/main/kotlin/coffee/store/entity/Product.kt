@@ -10,9 +10,9 @@ abstract class Product(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         open var id: Long = 0,
         @Column(name = "название")
-        open val name: String = "",
+        open var name: String = "",
         @Column(name = "стоимость")
-        open val cost: Double = 0.0,
+        open var cost: Double = 0.0,
         @Column(name = "фото")
-        open val photo: ByteArray? = null,
+        open var photo: ByteArray? = null,
 )

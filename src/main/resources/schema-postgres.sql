@@ -104,16 +104,16 @@ CREATE TABLE компонент_кофе
     id                 SERIAL PRIMARY KEY,
     id_кофе            INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
     id_ингредиента     INTEGER REFERENCES ингредиент (id)                    NOT NULL,
-    количество         INTEGER                                               NOT NULL CHECK (количество > 0),
+    количество         FLOAT                                                 NOT NULL CHECK (количество > 0.0),
     порядок_добавления INTEGER                                               NOT NULL CHECK (порядок_добавления >= 0)
 );
 
 CREATE TABLE заказ
 (
     id                 SERIAL PRIMARY KEY,
-    статус_заказа      TEXT                            NOT NULL,
-    id_клиента         INTEGER REFERENCES клиент (id)  NOT NULL,
-    id_кофейни         INTEGER REFERENCES кофейня (id) NOT NULL,
+    статус_заказа      TEXT                           NOT NULL,
+    id_клиента         INTEGER REFERENCES клиент (id) NOT NULL,
+    id_кофейни         INTEGER REFERENCES кофейня (id),
     скидка             FLOAT CHECK (скидка >= 0.0 AND скидка <= 100),
     стоимость          FLOAT,
     время_формирования TIMESTAMP
@@ -121,9 +121,10 @@ CREATE TABLE заказ
 
 CREATE TABLE компонент_заказа
 (
-    id        SERIAL PRIMARY KEY,
-    id_заказа INTEGER REFERENCES заказ (id) ON DELETE CASCADE NOT NULL,
-    id_товара INTEGER REFERENCES товар (id)                   NOT NULL
+    id         SERIAL PRIMARY KEY,
+    количество INTEGER DEFAULT 1                               NOT NULL,
+    id_заказа  INTEGER REFERENCES заказ (id) ON DELETE CASCADE NOT NULL,
+    id_товара  INTEGER REFERENCES товар (id)                   NOT NULL
 );
 
 CREATE TABLE расписание
