@@ -14,6 +14,7 @@ import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.DessertJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
 import coffee.store.repository.UserJpaRepository
+import coffee.store.service.UserService
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -29,11 +30,8 @@ class ScheduleController(
         private val coffeeJpaRepository: CoffeeJpaRepository,
         private val dessertJpaRepository: DessertJpaRepository,
         private val scheduleJpaRepository: ScheduleJpaRepository,
-        private val userJpaRepository: UserJpaRepository,
+        private val userService: UserService,
 ) {
-
-    private fun getUser(auth: Authentication) = userJpaRepository.findById((auth.principal as UserDetailsImpl).id)
-            .orElseThrow { UsernameNotFoundException("User not found - ${(auth.principal as UserDetailsImpl).id}") }
 
     @GetMapping
     fun getCustomSchedules(auth: Authentication): List<ScheduleListItemResponse> =
@@ -43,7 +41,7 @@ class ScheduleController(
     @PostMapping
     @PutMapping
     fun addCustomSchedule(auth: Authentication, payload: AddScheduleRequest): MessageResponse {
-        val user = getUser(auth)
+        val user = userService.getUserFromAuth(auth)
         val schedule = if (payload.id == null) Schedule() else scheduleJpaRepository.findById(payload.id)
                 .orElseThrow { EntityNotFoundException("Schedule not found - ${payload.id}") }
         payload.id?.let {

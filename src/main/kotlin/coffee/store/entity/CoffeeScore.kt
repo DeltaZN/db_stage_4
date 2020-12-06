@@ -11,5 +11,5 @@ class CoffeeScore(
         comment: String? = null,
         @ManyToOne
         @JoinColumn(name = "id_кофе")
-        val coffee: Coffee? = null,
+        var coffee: Coffee = Coffee(),
 ) : Score(id, score, comment)

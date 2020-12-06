@@ -10,7 +10,10 @@ abstract class Score(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         open val id: Long = 0,
         @Column(name = "оценка")
-        open val score: Int = 0,
+        open var score: Int = 0,
         @Column(name = "отзыв")
-        open val comment: String? = null,
+        open var comment: String? = null,
+        @ManyToOne
+        @JoinColumn(name = "id_клиента")
+        open val author: User = User()
 )

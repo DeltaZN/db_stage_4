@@ -1,6 +1,7 @@
 package coffee.store.controller
 
 import coffee.store.entity.Address
+import coffee.store.payload.response.MessageResponse
 import coffee.store.repository.AddressJpaRepository
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -15,27 +16,20 @@ class TestController(
 ) {
 
     @GetMapping("/all")
-    fun allAccess(): String {
-        return "Public Content."
-    }
+    fun allAccess() = MessageResponse("Public Content.")
+
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun userAccess(): String {
-        return "User Content."
-    }
+    fun userAccess() = MessageResponse("User Content.")
 
     @GetMapping("/barista")
     @PreAuthorize("hasRole('BARISTA')")
-    fun baristaAccess(): String {
-        return "Barista Content."
-    }
+    fun baristaAccess() = MessageResponse("Barista Content.")
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    fun adminAccess(): String {
-        return "Barista Content."
-    }
+    fun adminAccess() = MessageResponse("Admin Content.")
 
     @GetMapping("/{id}")
     fun test(@PathVariable id: Long): Optional<Address> {

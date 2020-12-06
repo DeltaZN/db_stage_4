@@ -148,9 +148,10 @@ CREATE TABLE запись_расписания
 
 CREATE TABLE оценка
 (
-    id     SERIAL PRIMARY KEY,
-    оценка INTEGER CHECK (оценка >= 0 AND оценка <= 5) NOT NULL,
-    отзыв  TEXT                                        NOT NULL
+    id         SERIAL PRIMARY KEY,
+    оценка     INTEGER CHECK (оценка >= 0 AND оценка <= 5) NOT NULL,
+    отзыв      TEXT                                        NOT NULL,
+    id_клиента INTEGER REFERENCES клиент (id)              NOT NULL
 );
 
 CREATE TABLE оценка_кофе
