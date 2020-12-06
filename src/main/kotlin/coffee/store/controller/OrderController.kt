@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
+import javax.persistence.EntityNotFoundException
 import javax.transaction.Transactional
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
@@ -42,7 +43,7 @@ class OrderController(
     @GetMapping("coffees/{id}")
     @Transactional
     fun getCoffee(@PathVariable id: Long): CoffeeFullItemResponse {
-        val coffee = coffeeJpaRepository.findById(id).orElseThrow { Exception("Coffee not found - $id") }
+        val coffee = coffeeJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Coffee not found - $id") }
         val components = coffee.components.asIterable()
                 .map { c -> CoffeeFullItemComponent(c.ingredient.name, c.addingOrder, c.ingredient.volumeMl * c.quantity) }
         // TODO добавить среднюю оценку
@@ -56,7 +57,7 @@ class OrderController(
 
     @GetMapping("desserts/{id}")
     fun getDessert(@PathVariable id: Long): Dessert =
-            dessertsJpaRepository.findById(id).orElseThrow { Exception("Dessert not found - $id") }
+            dessertsJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Dessert not found - $id") }
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -64,16 +65,16 @@ class OrderController(
         val user = customerJpaRepository.findById((auth.details as UserDetailsImpl).id)
                 .orElseThrow { UsernameNotFoundException("${(auth.details as UserDetailsImpl).id}") }
         val store = coffeeStoreJpaRepository.findById(order.coffeeStoreId)
-                .orElseThrow { Exception("coffee store not found - ${order.coffeeStoreId}") }
+                .orElseThrow { EntityNotFoundException("Coffee store not found - ${order.coffeeStoreId}") }
         val productList = mutableListOf<Product>()
         var sum = 0.0
         order.orderItems.forEach { i ->
             val product = if (i.type == ProductType.Coffee) {
                 coffeeJpaRepository.findById(i.productId)
-                        .orElseThrow { Exception("coffee not found - ${i.productId}") }
+                        .orElseThrow { EntityNotFoundException("Coffee not found - ${i.productId}") }
             } else {
                 dessertsJpaRepository.findById(i.productId)
-                        .orElseThrow { Exception("dessert not found - ${i.productId}") }
+                        .orElseThrow { EntityNotFoundException("Dessert not found - ${i.productId}") }
             }
             productList.add(product)
             sum += product.cost

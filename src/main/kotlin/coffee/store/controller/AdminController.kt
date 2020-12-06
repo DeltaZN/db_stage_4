@@ -14,5 +14,5 @@ class AdminController(
         private val userJpaRepository: UserJpaRepository,
 ) {
     @GetMapping("users")
-    fun getUsers(): MutableIterable<User> = userJpaRepository.findAll()
+    fun getUsers(): Iterable<User> = userJpaRepository.findAll()
 }

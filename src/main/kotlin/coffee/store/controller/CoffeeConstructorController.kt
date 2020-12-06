@@ -14,5 +14,5 @@ class CoffeeConstructorController(
         private val ingredientJpaRepository: IngredientJpaRepository
 ) {
     @GetMapping("ingredients")
-    fun getIngredients(): MutableIterable<Ingredient> = ingredientJpaRepository.findAll()
+    fun getIngredients(): Iterable<Ingredient> = ingredientJpaRepository.findAll()
 }

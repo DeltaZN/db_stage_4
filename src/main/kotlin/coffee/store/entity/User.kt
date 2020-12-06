@@ -37,10 +37,10 @@ data class User(
         @JoinTable(name = "любимые_кофе",
                 joinColumns = [JoinColumn(name = "id_клиента")],
                 inverseJoinColumns = [JoinColumn(name = "id_кофе")])
-        val favoriteCoffees: Set<Coffee> = emptySet(),
+        var favoriteCoffees: Set<Coffee> = emptySet(),
         @ManyToMany(fetch = FetchType.LAZY)
         @JoinTable(name = "любимые_расписания",
                 joinColumns = [JoinColumn(name = "id_клиента")],
                 inverseJoinColumns = [JoinColumn(name = "id_расписания")])
-        val favoriteSchedules: Set<Coffee> = emptySet(),
+        var favoriteSchedules: Set<Schedule> = emptySet(),
 )

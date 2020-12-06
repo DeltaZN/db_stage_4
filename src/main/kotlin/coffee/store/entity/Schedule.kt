@@ -19,4 +19,6 @@ data class Schedule(
         @Enumerated(EnumType.STRING)
         @Column(name = "состояние")
         val status: ScheduleStatus = ScheduleStatus.HIDDEN,
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
+        val components: MutableList<ScheduleComponent> = mutableListOf(),
 )
