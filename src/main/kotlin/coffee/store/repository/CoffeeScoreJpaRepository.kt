@@ -17,4 +17,10 @@ interface CoffeeScoreJpaRepository : CrudRepository<CoffeeScore, Long> {
             countQuery = "select count(*) from оценка_кофе join оценка on оценка_кофе.id_оценки = оценка.id where id_кофе = ? and id_клиента = ?",
             nativeQuery = true)
     fun findScoreByCoffeeIdAndUserId(coffeeId: Long, clientId: Long): Optional<CoffeeScore>
+
+    @Query(
+            value = "select avg(оценка.оценка) from оценка_кофе join оценка on оценка_кофе.id_оценки = оценка.id where id_кофе = ?",
+            countQuery = "select 1",
+            nativeQuery = true)
+    fun getAverageScoreByCoffee(coffeeId: Long): Double?
 }

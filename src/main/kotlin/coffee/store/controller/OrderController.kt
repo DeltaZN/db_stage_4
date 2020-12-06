@@ -5,14 +5,12 @@ import coffee.store.entity.CoffeeStore
 import coffee.store.entity.Dessert
 import coffee.store.entity.Order
 import coffee.store.entity.OrderItem
+import coffee.store.model.CoffeeType
 import coffee.store.model.OrderStatus
 import coffee.store.model.ProductType
 import coffee.store.payload.request.SubmitOrderRequest
 import coffee.store.payload.response.*
-import coffee.store.repository.CoffeeJpaRepository
-import coffee.store.repository.CoffeeStoreJpaRepository
-import coffee.store.repository.DessertJpaRepository
-import coffee.store.repository.UserJpaRepository
+import coffee.store.repository.*
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -26,6 +24,7 @@ import javax.transaction.Transactional
 @RequestMapping("/api/order")
 class OrderController(
         private val coffeeStoreJpaRepository: CoffeeStoreJpaRepository,
+        private val coffeeScoreJpaRepository: CoffeeScoreJpaRepository,
         private val coffeeJpaRepository: CoffeeJpaRepository,
         private val dessertsJpaRepository: DessertJpaRepository,
         private val customerJpaRepository: UserJpaRepository,
@@ -35,9 +34,8 @@ class OrderController(
 
     @GetMapping("coffees")
     fun getCoffees(): List<CoffeeListItemResponse> {
-        // TODO добавить среднюю оценку
         return coffeeJpaRepository.findAllPublicCoffee()
-                .map { c -> CoffeeListItemResponse(c.id, c.name, c.cost, c.type, null, c.photo) }
+                .map { c -> CoffeeListItemResponse(c.id, c.name, c.cost, CoffeeType.valueOf(c.type), c.avgRating, c.photo) }
     }
 
     @GetMapping("coffees/{id}")
@@ -46,9 +44,9 @@ class OrderController(
         val coffee = coffeeJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Coffee not found - $id") }
         val components = coffee.components.asIterable()
                 .map { c -> CoffeeFullItemComponent(c.ingredient.name, c.addingOrder, c.quantity, c.ingredient.volumeMl) }
-        // TODO добавить среднюю оценку
         return CoffeeFullItemResponse(coffee.id, coffee.name, coffee.cost, coffee.type,
-                "${coffee.author?.firstName} ${coffee.author?.lastName}", null, null, components)
+                "${coffee.author?.firstName} ${coffee.author?.lastName}",
+                coffeeScoreJpaRepository.getAverageScoreByCoffee(coffee.id), coffee.photo, components)
     }
 
     @GetMapping("desserts")

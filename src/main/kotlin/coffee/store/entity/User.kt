@@ -11,23 +11,23 @@ data class User(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long = 0,
         @Column(name = "имя")
-        val firstName: String = "",
+        var firstName: String = "",
         @Column(name = "фамилия")
-        val lastName: String = "",
+        var lastName: String = "",
         @Column(name = "пол")
         @Enumerated(EnumType.STRING)
-        val sex: Sex = Sex.M,
+        var sex: Sex = Sex.M,
         @Column(name = "дата_рождения")
-        val birthDay: LocalDate? = null,
+        var birthDay: LocalDate? = null,
         @ManyToOne
         @JoinColumn(name = "id_адреса")
-        val address: Address? = null,
+        var address: Address? = null,
         @Column(name = "email")
-        val email: String? = null,
+        var email: String? = null,
         @Column(name = "телефон")
-        val phone: String = "",
+        var phone: String = "",
         @Column(name = "пароль")
-        val password: String = "",
+        var password: String = "",
         @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(name = "роли_пользователей",
                 joinColumns = [JoinColumn(name = "id_клиента")],

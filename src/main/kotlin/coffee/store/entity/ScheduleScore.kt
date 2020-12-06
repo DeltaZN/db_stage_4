@@ -11,5 +11,5 @@ class ScheduleScore(
         comment: String? = null,
         @ManyToOne
         @JoinColumn(name = "id_расписания")
-        val schedule: Schedule = Schedule(),
+        var schedule: Schedule = Schedule(),
 ) : Score(id, score, comment)
