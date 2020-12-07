@@ -11,15 +11,15 @@ class ScheduleComponent(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
         @Column(name = "название")
-        val name: String = "",
+        val name: String? = null,
         @ManyToOne
         @JoinColumn(name = "id_расписания")
-        val schedule: Schedule? = null,
+        val schedule: Schedule = Schedule(),
         @ManyToOne
         @JoinColumn(name = "id_заказа")
-        val order: Order? = null,
+        val order: Order = Order(),
         @Column(name = "день_недели")
-        val dayOfWeek: DayOfWeek? = null,
+        val dayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
         @Column(name = "время")
-        val time: LocalTime? = null,
+        val time: LocalTime = LocalTime.MIDNIGHT,
 )

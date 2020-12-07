@@ -11,7 +11,6 @@ import coffee.store.repository.ScheduleScoreJpaRepository
 import coffee.store.service.UserService
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.*
 import javax.persistence.EntityNotFoundException
 
@@ -40,15 +39,13 @@ class ScoresController(
     fun addCoffeeScore(auth: Authentication, payload: ScorePayload): MessageResponse {
         val user = userService.getUserFromAuth(auth)
         val coffeeScore = CoffeeScore()
-        coffeeScore.comment = payload.comment
-        coffeeScore.score = payload.score
         val coffee = coffeeJpaRepository.findById(payload.itemId)
                 .orElseThrow { EntityNotFoundException("Coffee not found = ${payload.itemId}") }
-        if (payload.id == null) {
-            if (coffeeScoreJpaRepository.findScoreByCoffeeIdAndUserId(coffee.id, user.id).isPresent)
-                throw UsernameNotFoundException("You can submit only one score per coffee")
-            coffeeScore.coffee = coffee
-        }
+        if (coffeeScoreJpaRepository.findScoreByCoffeeIdAndUserId(coffee.id, user.id).isPresent)
+            throw IllegalAccessException("You can submit only one score per coffee")
+        coffeeScore.comment = payload.comment
+        coffeeScore.score = payload.score
+        coffeeScore.coffee = coffee
         coffeeScoreJpaRepository.save(coffeeScore)
         return MessageResponse("Score successfully submitted!")
     }
@@ -60,7 +57,7 @@ class ScoresController(
         val coffeeScore = coffeeScoreJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Coffee score not found - ${payload.id}") }
         if (coffeeScore.author.id != user.id)
-            throw UsernameNotFoundException("An attempt to change a wrong score!")
+            throw IllegalAccessException("An attempt to change a wrong score!")
         coffeeScore.comment = payload.comment
         coffeeScore.score = payload.score
         coffeeScoreJpaRepository.save(coffeeScore)
@@ -74,7 +71,7 @@ class ScoresController(
         val coffeeScore = coffeeScoreJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Coffee score not found - $id") }
         if (coffeeScore.author.id != user.id)
-            throw UsernameNotFoundException("An attempt to delete a wrong score!")
+            throw IllegalAccessException("An attempt to delete a wrong score!")
         coffeeScoreJpaRepository.delete(coffeeScore)
         return MessageResponse("Coffee successfully deleted!")
     }
@@ -90,7 +87,7 @@ class ScoresController(
                 .orElseThrow { EntityNotFoundException("Schedule not found = ${payload.itemId}") }
         if (payload.id == null) {
             if (scheduleScoreJpaRepository.findScoreByScheduleIdAndUserId(schedule.id, user.id).isPresent)
-                throw UsernameNotFoundException("You can submit only one score per schedule")
+                throw IllegalAccessException("You can submit only one score per schedule")
             scheduleScore.schedule = schedule
         }
         scheduleScoreJpaRepository.save(scheduleScore)
@@ -104,7 +101,7 @@ class ScoresController(
         val scheduleScore = scheduleScoreJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Schedule score not found - ${payload.id}") }
         if (scheduleScore.author.id != user.id)
-            throw UsernameNotFoundException("An attempt to change a wrong score!")
+            throw IllegalAccessException("An attempt to change a wrong score!")
         scheduleScore.comment = payload.comment
         scheduleScore.score = payload.score
         scheduleScoreJpaRepository.save(scheduleScore)
@@ -118,7 +115,7 @@ class ScoresController(
         val scheduleScore = scheduleScoreJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Schedule score not found - $id") }
         if (scheduleScore.author.id != user.id)
-            throw UsernameNotFoundException("An attempt to delete a wrong score!")
+            throw IllegalAccessException("An attempt to delete a wrong score!")
         scheduleScoreJpaRepository.delete(scheduleScore)
         return MessageResponse("Score successfully deleted!")
     }

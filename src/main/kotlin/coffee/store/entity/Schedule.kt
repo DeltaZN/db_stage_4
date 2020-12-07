@@ -10,10 +10,10 @@ data class Schedule(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
         @Column(name = "название")
-        var name: String = "",
+        var name: String? = null,
         @ManyToOne
         @JoinColumn(name = "id_клиента")
-        var author: User? = null,
+        var author: User = User(),
         @Column(name = "описание")
         var description: String? = null,
         @Enumerated(EnumType.STRING)

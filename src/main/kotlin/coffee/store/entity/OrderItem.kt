@@ -10,10 +10,10 @@ data class OrderItem(
         val id: Long = 0,
         @ManyToOne
         @JoinColumn(name = "id_заказа")
-        val order: Order? = null,
+        val order: Order = Order(),
         @ManyToOne
         @JoinColumn(name = "id_товара")
-        val product: Product? = null,
+        val product: Product = Dessert(),
         @Column(name = "количество")
         val quantity: Int = 0,
 )

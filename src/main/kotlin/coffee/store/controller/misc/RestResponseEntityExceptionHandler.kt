@@ -21,4 +21,11 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
         return handleExceptionInternal(ex, MessageResponse(ex.message!!),
                 HttpHeaders(), HttpStatus.NOT_FOUND, request)
     }
+
+    @ExceptionHandler(value = [IllegalAccessException::class])
+    protected fun handleForbidden(
+            ex: Exception, request: WebRequest): ResponseEntity<Any?>? {
+        return handleExceptionInternal(ex, MessageResponse(ex.message!!),
+                HttpHeaders(), HttpStatus.FORBIDDEN, request)
+    }
 }

@@ -92,7 +92,7 @@ class CustomerController(
             userJpaRepository.findById((auth.principal as UserDetailsImpl).id)
                     .orElseThrow { UsernameNotFoundException("User not found - ${(auth.principal as UserDetailsImpl).id}") }
                     .favoriteSchedules.asIterable()
-                    .map { s -> ScheduleListItemResponse(s.id, s.name, s.description, s.status) }
+                    .map { s -> ScheduleListItemResponse(s.id, s.name, s.description, null, s.status) }
 
     @PostMapping("favorite_schedules")
     @Transactional
