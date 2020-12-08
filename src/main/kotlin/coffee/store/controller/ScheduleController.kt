@@ -1,6 +1,5 @@
 package coffee.store.controller
 
-import coffee.store.auth.UserDetailsImpl
 import coffee.store.entity.Order
 import coffee.store.entity.OrderItem
 import coffee.store.entity.Schedule
@@ -15,8 +14,8 @@ import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.DessertJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
 import coffee.store.service.UserService
+import io.swagger.annotations.Api
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import java.time.DayOfWeek
 import javax.persistence.EntityNotFoundException
@@ -24,6 +23,7 @@ import javax.persistence.EntityNotFoundException
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/schedules")
+@Api(tags = ["Schedule"])
 @PreAuthorize("hasRole('CUSTOMER')")
 class ScheduleController(
         private val coffeeJpaRepository: CoffeeJpaRepository,
@@ -33,13 +33,13 @@ class ScheduleController(
 ) {
 
     @GetMapping
-    fun getCustomSchedules(auth: Authentication): List<ScheduleListItemResponse> =
-            scheduleJpaRepository.findUserSchedules((auth.principal as UserDetailsImpl).id)
+    fun getCustomSchedules(): List<ScheduleListItemResponse> =
+            scheduleJpaRepository.findUserSchedules(userService.getCurrentUserId())
                     .map { s -> ScheduleListItemResponse(s.id, s.name, s.description, s.avgRating, ScheduleStatus.valueOf(s.status)) }
 
     @PostMapping
-    fun addCustomSchedule(auth: Authentication, payload: ScheduleRequest): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun addCustomSchedule(@RequestBody payload: ScheduleRequest): MessageResponse {
+        val user = userService.getUserFromAuth()
         val schedule = Schedule()
         schedule.name = payload.name!!
         schedule.description = payload.description
@@ -66,8 +66,8 @@ class ScheduleController(
     }
 
     @PutMapping
-    fun editCustomSchedule(auth: Authentication, payload: ScheduleRequest): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun editCustomSchedule(@RequestBody payload: ScheduleRequest): MessageResponse {
+        val user = userService.getUserFromAuth()
         val schedule = scheduleJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Schedule not found - ${payload.id}") }
         if (schedule.author.id != user.id)

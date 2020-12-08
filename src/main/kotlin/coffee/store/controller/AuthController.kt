@@ -10,6 +10,7 @@ import coffee.store.payload.response.JwtResponse
 import coffee.store.payload.response.MessageResponse
 import coffee.store.repository.RoleJpaRepository
 import coffee.store.repository.UserJpaRepository
+import io.swagger.annotations.Api
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -23,6 +24,7 @@ import java.util.stream.Collectors
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Api(tags = ["Authentication"])
 class AuthController(
         private val authenticationManager: AuthenticationManager,
         private val userRepository: UserJpaRepository,

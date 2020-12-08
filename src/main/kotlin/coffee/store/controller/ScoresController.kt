@@ -9,6 +9,7 @@ import coffee.store.repository.CoffeeScoreJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
 import coffee.store.repository.ScheduleScoreJpaRepository
 import coffee.store.service.UserService
+import io.swagger.annotations.Api
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -17,6 +18,7 @@ import javax.persistence.EntityNotFoundException
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/scores")
+@Api(tags = ["Score"])
 class ScoresController(
         private val userService: UserService,
         private val coffeeJpaRepository: CoffeeJpaRepository,
@@ -36,8 +38,8 @@ class ScoresController(
 
     @PostMapping("coffee")
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun addCoffeeScore(auth: Authentication, payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun addCoffeeScore(@RequestBody payload: ScorePayload): MessageResponse {
+        val user = userService.getUserFromAuth()
         val coffeeScore = CoffeeScore()
         val coffee = coffeeJpaRepository.findById(payload.itemId)
                 .orElseThrow { EntityNotFoundException("Coffee not found = ${payload.itemId}") }
@@ -52,8 +54,8 @@ class ScoresController(
 
     @PutMapping("coffee")
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun editCoffeeScore(auth: Authentication, payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun editCoffeeScore(@RequestBody payload: ScorePayload): MessageResponse {
+        val user = userService.getUserFromAuth()
         val coffeeScore = coffeeScoreJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Coffee score not found - ${payload.id}") }
         if (coffeeScore.author.id != user.id)
@@ -66,8 +68,8 @@ class ScoresController(
 
     @DeleteMapping("coffee/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun deleteCoffeeScore(auth: Authentication, @PathVariable id: Long): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun deleteCoffeeScore(@PathVariable id: Long): MessageResponse {
+        val user = userService.getUserFromAuth()
         val coffeeScore = coffeeScoreJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Coffee score not found - $id") }
         if (coffeeScore.author.id != user.id)
@@ -78,8 +80,8 @@ class ScoresController(
 
     @PostMapping("schedule")
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun addScheduleScore(auth: Authentication, payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun addScheduleScore(@RequestBody payload: ScorePayload): MessageResponse {
+        val user = userService.getUserFromAuth()
         val scheduleScore = ScheduleScore()
         scheduleScore.comment = payload.comment
         scheduleScore.score = payload.score
@@ -96,8 +98,8 @@ class ScoresController(
 
     @PutMapping("schedule")
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun editScheduleScore(auth: Authentication, payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun editScheduleScore(@RequestBody payload: ScorePayload): MessageResponse {
+        val user = userService.getUserFromAuth()
         val scheduleScore = scheduleScoreJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Schedule score not found - ${payload.id}") }
         if (scheduleScore.author.id != user.id)
@@ -110,8 +112,8 @@ class ScoresController(
 
     @DeleteMapping("schedule/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun deleteScheduleScore(auth: Authentication, @PathVariable id: Long): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun deleteScheduleScore(@PathVariable id: Long): MessageResponse {
+        val user = userService.getUserFromAuth()
         val scheduleScore = scheduleScoreJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Schedule score not found - $id") }
         if (scheduleScore.author.id != user.id)

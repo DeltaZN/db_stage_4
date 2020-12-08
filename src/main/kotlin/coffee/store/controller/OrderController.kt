@@ -10,6 +10,7 @@ import coffee.store.payload.request.SubmitOrderRequest
 import coffee.store.payload.response.*
 import coffee.store.repository.*
 import coffee.store.service.UserService
+import io.swagger.annotations.Api
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -20,6 +21,7 @@ import javax.transaction.Transactional
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/order")
+@Api(tags = ["Order"])
 class OrderController(
         private val coffeeStoreJpaRepository: CoffeeStoreJpaRepository,
         private val coffeeScoreJpaRepository: CoffeeScoreJpaRepository,
@@ -30,7 +32,7 @@ class OrderController(
         private val userService: UserService,
 ) {
     @GetMapping("stores")
-    fun getCoffeeStores(): MutableIterable<CoffeeStore> = coffeeStoreJpaRepository.findAll()
+    fun getCoffeeStores(): List<CoffeeStore> = coffeeStoreJpaRepository.findAll().toList()
 
     @GetMapping("coffees")
     fun getCoffees(): List<CoffeeListItemResponse> = coffeeJpaRepository.findAllPublicCoffee()
@@ -88,8 +90,8 @@ class OrderController(
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
-    fun submitOrder(auth: Authentication, order: SubmitOrderRequest): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun submitOrder(@RequestBody order: SubmitOrderRequest): MessageResponse {
+        val user = userService.getUserFromAuth()
         val store = coffeeStoreJpaRepository.findById(order.coffeeStoreId)
                 .orElseThrow { EntityNotFoundException("Coffee store not found - ${order.coffeeStoreId}") }
         var sum = 0.0

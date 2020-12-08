@@ -1,6 +1,5 @@
 package coffee.store.controller
 
-import coffee.store.auth.UserDetailsImpl
 import coffee.store.payload.common.UserInformationPayload
 import coffee.store.payload.request.IdListRequest
 import coffee.store.payload.response.CoffeeListItemResponse
@@ -12,9 +11,8 @@ import coffee.store.repository.OrderJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
 import coffee.store.repository.UserJpaRepository
 import coffee.store.service.UserService
+import io.swagger.annotations.Api
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.*
 import javax.persistence.EntityNotFoundException
 import javax.transaction.Transactional
@@ -22,6 +20,7 @@ import javax.transaction.Transactional
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/customer")
+@Api(tags = ["Customer"])
 @PreAuthorize("hasRole('CUSTOMER')")
 class CustomerController(
         private val orderJpaRepository: OrderJpaRepository,
@@ -32,15 +31,15 @@ class CustomerController(
 ) {
 
     @GetMapping
-    fun getUserInformation(auth: Authentication): UserInformationPayload {
-        val user = userService.getUserFromAuth(auth)
+    fun getUserInformation(): UserInformationPayload {
+        val user = userService.getUserFromAuth()
         return UserInformationPayload(user.firstName, user.lastName, user.sex, user.birthDay,
                 user.address, user.email, user.phone, user.password)
     }
 
     @PutMapping
-    fun editUser(auth: Authentication, payload: UserInformationPayload): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun editUser(@RequestBody payload: UserInformationPayload): MessageResponse {
+        val user = userService.getUserFromAuth()
         payload.firstName?.let { user.firstName = it }
         payload.lastName?.let { user.lastName = it }
         payload.sex?.let { user.sex = it }
@@ -54,22 +53,20 @@ class CustomerController(
     }
 
     @GetMapping("orders")
-    fun getOrders(auth: Authentication): List<OrderListItemResponse> =
-            orderJpaRepository.findOrderByUser((auth.principal as UserDetailsImpl).id)
+    fun getOrders(): List<OrderListItemResponse> =
+            orderJpaRepository.findOrderByUser(userService.getCurrentUserId())
                     .map { o -> OrderListItemResponse(o.id, o.status, o.cost, o.discount, o.orderTime) }
 
     @GetMapping("favorite_coffees")
     @Transactional
-    fun getFavoriteCoffees(auth: Authentication): List<CoffeeListItemResponse> =
-            userJpaRepository.findById((auth.principal as UserDetailsImpl).id)
-                    .orElseThrow { UsernameNotFoundException("User not found - ${(auth.principal as UserDetailsImpl).id}") }
-                    .favoriteCoffees.asIterable()
+    fun getFavoriteCoffees(): List<CoffeeListItemResponse> =
+            userService.getUserFromAuth().favoriteCoffees.asIterable()
                     .map { c -> CoffeeListItemResponse(c.id, c.name, c.cost, c.type, null, c.photo) }
 
     @PostMapping("favorite_coffees")
     @Transactional
-    fun addFavoriteCoffees(auth: Authentication, adding: IdListRequest): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun addFavoriteCoffees(@RequestBody adding: IdListRequest): MessageResponse {
+        val user = userService.getUserFromAuth()
         val newFavoriteCoffees = user.favoriteCoffees.plus(
                 adding.ids.map { i -> coffeeJpaRepository.findById(i).orElseThrow { EntityNotFoundException("Coffee not found - $i") } })
         user.favoriteCoffees = newFavoriteCoffees
@@ -78,8 +75,8 @@ class CustomerController(
 
     @DeleteMapping("favorite_coffees")
     @Transactional
-    fun removeFavoriteCoffees(auth: Authentication, adding: IdListRequest): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun removeFavoriteCoffees(@RequestBody adding: IdListRequest): MessageResponse {
+        val user = userService.getUserFromAuth()
         val newFavoriteCoffees = user.favoriteCoffees.minus(
                 adding.ids.map { i -> coffeeJpaRepository.findById(i).orElseThrow { EntityNotFoundException("Coffee not found - $i") } })
         user.favoriteCoffees = newFavoriteCoffees
@@ -88,16 +85,14 @@ class CustomerController(
 
     @GetMapping("favorite_schedules")
     @Transactional
-    fun getFavoriteSchedules(auth: Authentication): List<ScheduleListItemResponse> =
-            userJpaRepository.findById((auth.principal as UserDetailsImpl).id)
-                    .orElseThrow { UsernameNotFoundException("User not found - ${(auth.principal as UserDetailsImpl).id}") }
-                    .favoriteSchedules.asIterable()
+    fun getFavoriteSchedules(): List<ScheduleListItemResponse> =
+            userService.getUserFromAuth().favoriteSchedules.asIterable()
                     .map { s -> ScheduleListItemResponse(s.id, s.name, s.description, null, s.status) }
 
     @PostMapping("favorite_schedules")
     @Transactional
-    fun addFavoriteSchedules(auth: Authentication, adding: IdListRequest): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun addFavoriteSchedules(@RequestBody adding: IdListRequest): MessageResponse {
+        val user = userService.getUserFromAuth()
         val newFavoriteSchedules = user.favoriteSchedules.plus(
                 adding.ids.map { i -> scheduleJpaRepository.findById(i).orElseThrow { EntityNotFoundException("Schedule not found - $i") } })
         user.favoriteSchedules = newFavoriteSchedules
@@ -106,8 +101,8 @@ class CustomerController(
 
     @DeleteMapping("favorite_schedules")
     @Transactional
-    fun removeFavoriteSchedules(auth: Authentication, adding: IdListRequest): MessageResponse {
-        val user = userService.getUserFromAuth(auth)
+    fun removeFavoriteSchedules(@RequestBody adding: IdListRequest): MessageResponse {
+        val user = userService.getUserFromAuth()
         val newFavoriteSchedules = user.favoriteSchedules.minus(
                 adding.ids.map { i -> scheduleJpaRepository.findById(i).orElseThrow { EntityNotFoundException("Schedule not found - $i") } })
         user.favoriteSchedules = newFavoriteSchedules
