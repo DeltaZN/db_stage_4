@@ -179,3 +179,205 @@ CREATE TABLE любимые_кофе
     id_кофе    INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
     PRIMARY KEY (id_клиента, id_кофе)
 );
+
+CREATE OR REPLACE FUNCTION calculate_recipe_total_volume(coffee INT) RETURNS float AS
+'
+    DECLARE
+        sum float;
+    BEGIN
+        SELECT SUM(компонент_кофе.количество * ингредиент.количество_мл) as whole_volume
+        FROM компонент_кофе
+                 JOIN ингредиент ON компонент_кофе.id_ингредиента = ингредиент.id
+        WHERE компонент_кофе.id_кофе = coffee
+        INTO sum;
+        RETURN sum;
+    END;
+' LANGUAGE plpgsql;
+
+-- триггер чтобы нельзя если вес ингредиентов больше определённого объёма
+CREATE OR REPLACE FUNCTION check_recipe() RETURNS TRIGGER AS
+'
+    BEGIN
+        IF TG_OP = ''INSERT'' THEN
+            IF (calculate_recipe_total_volume(NEW.id_кофе) +
+                NEW.количество * (SELECT количество_мл
+                                  FROM ингредиент
+                                  WHERE id = NEW.id_ингредиента)) > 400 THEN
+                RETURN NULL;
+            ELSE
+                RETURN NEW;
+            END IF;
+        ELSIF TG_OP = ''UPDATE'' THEN
+            IF (calculate_recipe_total_volume(NEW.id_кофе) +
+                NEW.количество * (SELECT количество_мл
+                                  FROM ингредиент
+                                  WHERE id = NEW.id_ингредиента) -
+                OLD.количество * (SELECT количество_мл
+                                  FROM ингредиент
+                                  WHERE id = OLD.id_ингредиента)) > 400 THEN
+                RETURN NULL;
+            ELSE
+                RETURN NEW;
+            END IF;
+        END IF;
+    END;
+' LANGUAGE plpgsql;
+CREATE TRIGGER recipe_ingredients
+    BEFORE INSERT OR UPDATE
+    ON компонент_кофе
+    FOR EACH ROW
+EXECUTE PROCEDURE check_recipe();
+
+
+CREATE OR REPLACE FUNCTION delete_score() RETURNS TRIGGER AS
+'
+    BEGIN
+        DELETE
+        FROM оценка
+        WHERE оценка.id = OLD.id_оценки;
+        RETURN NULL;
+    END;
+' LANGUAGE plpgsql;
+-- триггер удаления оценок при удалении оценки кофе
+CREATE TRIGGER score_coffee_delete
+    AFTER DELETE
+    ON оценка_кофе
+    FOR EACH ROW
+EXECUTE PROCEDURE delete_score();
+
+-- триггер удаления оценок при удалении оценки расписания
+CREATE TRIGGER score_schedule_delete
+    AFTER DELETE
+    ON оценка_расписания
+    FOR EACH ROW
+EXECUTE PROCEDURE delete_score();
+
+CREATE OR REPLACE FUNCTION delete_product() RETURNS TRIGGER AS
+'
+    BEGIN
+        DELETE
+        FROM товар
+        WHERE товар.id = OLD.id_товара;
+        RETURN NULL;
+    END;
+' LANGUAGE plpgsql;
+
+-- триггер удаления товара при удалении десерта
+CREATE TRIGGER desert_product_delete
+    AFTER DELETE
+    ON десерт
+    FOR EACH ROW
+EXECUTE PROCEDURE delete_product();
+
+-- триггер удаления товара при удалении кофе
+CREATE TRIGGER coffee_product_delete
+    AFTER DELETE
+    ON кофе
+    FOR EACH ROW
+EXECUTE PROCEDURE delete_product();
+
+CREATE OR REPLACE FUNCTION createCoffee(coffee_name text, cost float, photo bytea, coffee_type char, author int,
+                                        coffee_state text) RETURNS INT
+    STRICT AS
+'
+    DECLARE
+        ret int;
+    BEGIN
+    INSERT INTO товар(название, стоимость, фото)
+    VALUES (coffee_name, cost, photo)
+    RETURNING id
+    INTO ret;
+    INSERT INTO кофе(id_товара, тип, id_автора, состояние)
+    VALUES (ret, coffee_type, author, coffee_state); RETURN ret; END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION createDessert(name text, price float, photo bytea, calories float, weight float) RETURNS INT
+    STRICT AS
+'
+    DECLARE
+        ret int;
+    BEGIN
+    INSERT INTO товар(название, стоимость, фото)
+    VALUES (name, price, photo)
+    RETURNING id
+    INTO ret;
+    INSERT INTO десерт(id_товара, калории, вес)
+    VALUES (ret, calories, weight); RETURN ret; END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION addCoffeeRating(rating int, comments text, coffee int, client int) RETURNS INT
+    STRICT AS
+'
+    DECLARE
+        ret int;
+    BEGIN
+    INSERT INTO оценка(оценка, отзыв, id_клиента)
+    VALUES (rating, comments, client)
+    RETURNING id
+    INTO ret;
+    INSERT INTO оценка_кофе(id_оценки, id_кофе)
+    VALUES (ret, coffee); RETURN ret; END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION addScheduleRating(rating int, comments text, schedule int, client int) RETURNS INT
+    STRICT AS
+'
+    DECLARE
+        ret int;
+    BEGIN
+    INSERT INTO оценка(оценка, отзыв, id_клиента)
+    VALUES (rating, comments, client)
+    RETURNING id
+    INTO ret;
+    INSERT INTO оценка_расписания(id_оценки, id_расписания)
+    VALUES (ret, schedule); RETURN ret; END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION copySchedule(schedule int, client int) RETURNS INT
+    STRICT AS
+'
+    DECLARE
+        newSchedId int;
+    BEGIN
+    INSERT INTO расписание(название, id_клиента, описание, состояние)
+    SELECT название,
+           client,
+           описание,
+           ''HIDDEN''
+    FROM расписание
+    WHERE id = schedule
+    RETURNING id
+    INTO newSchedId;
+    INSERT INTO запись_расписания(название, id_расписания, id_заказа, день_недели, время)
+    SELECT название,
+           newSchedId,
+           id_заказа,
+           день_недели,
+           время
+    FROM запись_расписания
+    WHERE id_расписания = schedule; RETURN newSchedId; END;
+' LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION copyCoffee(coffee int, author int) RETURNS INT
+    STRICT AS
+'
+    DECLARE
+        newCoffeeId int;
+    BEGIN
+    INSERT INTO товар(название, стоимость, фото)
+    SELECT название, стоимость, фото
+    FROM товар
+    WHERE id = coffee
+    RETURNING id
+    INTO newCoffeeId;
+    INSERT
+    INTO кофе(id_товара, тип, id_автора, состояние)
+    VALUES (newCoffeeId, ''u'', author, ''HIDDEN'');
+    INSERT INTO компонент_кофе(id_кофе, id_ингредиента, количество, порядок_добавления)
+    SELECT newCoffeeId,
+           id_ингредиента,
+           количество,
+           порядок_добавления
+    FROM компонент_кофе
+    WHERE id_кофе = coffee; RETURN newCoffeeId; END;
+' LANGUAGE 'plpgsql';
