@@ -1,5 +1,6 @@
 package coffee.store.entity
 
+import coffee.store.model.Ownerable
 import coffee.store.model.ScheduleStatus
 import javax.persistence.*
 
@@ -21,4 +22,7 @@ data class Schedule(
         var status: ScheduleStatus = ScheduleStatus.HIDDEN,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
         var components: List<ScheduleComponent> = mutableListOf(),
-)
+) : Ownerable {
+        override val owner: User
+                get() = author
+}

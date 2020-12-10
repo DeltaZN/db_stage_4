@@ -1,22 +1,30 @@
 package coffee.store.controller
 
-import coffee.store.entity.*
+import coffee.store.entity.CoffeeStore
+import coffee.store.entity.Dessert
+import coffee.store.entity.Order
+import coffee.store.entity.OrderItem
 import coffee.store.model.CoffeeType
 import coffee.store.model.OrderStatus
 import coffee.store.model.ProductType
 import coffee.store.model.ScheduleStatus
-import coffee.store.payload.request.SubmitOrderItem
 import coffee.store.payload.request.SubmitOrderRequest
-import coffee.store.payload.response.*
-import coffee.store.repository.*
+import coffee.store.payload.response.CoffeeListItemResponse
+import coffee.store.payload.response.DessertListItemResponse
+import coffee.store.payload.response.MessageResponse
+import coffee.store.payload.response.ScheduleListItemResponse
+import coffee.store.repository.CoffeeJpaRepository
+import coffee.store.repository.CoffeeStoreJpaRepository
+import coffee.store.repository.DessertJpaRepository
+import coffee.store.repository.ScheduleJpaRepository
+import coffee.store.service.CoffeeService
+import coffee.store.service.ScheduleService
 import coffee.store.service.UserService
 import io.swagger.annotations.Api
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import javax.persistence.EntityNotFoundException
-import javax.transaction.Transactional
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
@@ -24,12 +32,12 @@ import javax.transaction.Transactional
 @Api(tags = ["Order"])
 class OrderController(
         private val coffeeStoreJpaRepository: CoffeeStoreJpaRepository,
-        private val coffeeScoreJpaRepository: CoffeeScoreJpaRepository,
+        private val coffeeService: CoffeeService,
         private val coffeeJpaRepository: CoffeeJpaRepository,
         private val dessertsJpaRepository: DessertJpaRepository,
         private val scheduleJpaRepository: ScheduleJpaRepository,
-        private val scheduleScoreJpaRepository: ScheduleScoreJpaRepository,
         private val userService: UserService,
+        private val scheduleService: ScheduleService,
 ) {
     @GetMapping("stores")
     fun getCoffeeStores(): List<CoffeeStore> = coffeeStoreJpaRepository.findAll().toList()
@@ -41,6 +49,9 @@ class OrderController(
                         CoffeeType.valueOf(c.type), c.avgRating, c.photo)
             }
 
+    @GetMapping("coffees/{id}")
+    fun getCoffee(@PathVariable id: Long) = coffeeService.getCoffee(id)
+
     @GetMapping("schedules")
     fun getSchedules(): List<ScheduleListItemResponse> = scheduleJpaRepository.findAllPublicSchedules()
             .map { c ->
@@ -48,37 +59,8 @@ class OrderController(
                         c.avgRating, ScheduleStatus.valueOf(c.status))
             }
 
-    @GetMapping("coffees/{id}")
-    @Transactional
-    fun getCoffee(@PathVariable id: Long): CoffeeFullItemResponse {
-        val coffee = coffeeJpaRepository.findById(id)
-                .orElseThrow { EntityNotFoundException("Coffee not found - $id") }
-        val components = coffee.components.asIterable()
-                .map { c ->
-                    CoffeeFullItemComponent(c.ingredient.name, c.addingOrder,
-                            c.quantity, c.ingredient.volumeMl)
-                }
-        return CoffeeFullItemResponse(coffee.id, coffee.name, coffee.cost, coffee.type,
-                "${coffee.author?.firstName} ${coffee.author?.lastName}",
-                coffeeScoreJpaRepository.getAverageScoreByCoffee(coffee.id), coffee.photo, components)
-    }
-
-    @GetMapping("schedules/{id}")
-    @Transactional
-    fun getSchedule(@PathVariable id: Long): ScheduleFullItemResponse {
-        val schedule = scheduleJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Coffee not found - $id") }
-        val components = schedule.components.asIterable()
-                .map { c ->
-                    val items = c.order.items.asIterable().map { i ->
-                        SubmitOrderItem(i.product.id, i.quantity, if (i.product is Coffee) ProductType.Coffee else ProductType.Dessert)
-                    }
-                    ScheduleFullItemComponent(c.name, items, c.dayOfWeek, c.time)
-                }
-        return ScheduleFullItemResponse(schedule.id, schedule.name,
-                "${schedule.author.firstName} ${schedule.author.lastName}",
-                scheduleScoreJpaRepository.getAverageScoreBySchedule(schedule.id),
-                schedule.description, schedule.status, components)
-    }
+    @GetMapping("{id}")
+    fun getSchedule(@PathVariable id: Long) = scheduleService.getSchedule(id)
 
     @GetMapping("desserts")
     fun getDesserts(): List<DessertListItemResponse> = dessertsJpaRepository.findAll()
@@ -88,6 +70,7 @@ class OrderController(
     fun getDessert(@PathVariable id: Long): Dessert =
             dessertsJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Dessert not found - $id") }
 
+    // TODO получение всей информации заказа
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     fun submitOrder(@RequestBody order: SubmitOrderRequest): MessageResponse {

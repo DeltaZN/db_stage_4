@@ -23,4 +23,10 @@ interface CoffeeScoreJpaRepository : CrudRepository<CoffeeScore, Long> {
             countQuery = "select 1",
             nativeQuery = true)
     fun getAverageScoreByCoffee(coffeeId: Long): Double?
+
+    @Query(
+            value = "select addCoffeeRating(?, ?, ?, ?)",
+            countQuery = "select 1",
+            nativeQuery = true)
+    fun storeScore(rating: Int, comment: String?, coffeeId: Long, clientId: Long): Long
 }

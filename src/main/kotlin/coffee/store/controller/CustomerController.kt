@@ -9,7 +9,6 @@ import coffee.store.payload.response.ScheduleListItemResponse
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.OrderJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
-import coffee.store.repository.UserJpaRepository
 import coffee.store.service.UserService
 import io.swagger.annotations.Api
 import org.springframework.security.access.prepost.PreAuthorize
@@ -26,7 +25,6 @@ class CustomerController(
         private val orderJpaRepository: OrderJpaRepository,
         private val coffeeJpaRepository: CoffeeJpaRepository,
         private val scheduleJpaRepository: ScheduleJpaRepository,
-        private val userJpaRepository: UserJpaRepository,
         private val userService: UserService,
 ) {
 
@@ -39,16 +37,7 @@ class CustomerController(
 
     @PutMapping
     fun editUser(@RequestBody payload: UserInformationPayload): MessageResponse {
-        val user = userService.getUserFromAuth()
-        payload.firstName?.let { user.firstName = it }
-        payload.lastName?.let { user.lastName = it }
-        payload.sex?.let { user.sex = it }
-        payload.birthDay?.let { user.birthDay = it }
-        payload.password?.let { user.password = it }
-        payload.phone?.let { user.phone = it }
-        payload.address?.let { user.address = it }
-        payload.email?.let { user.email = it }
-        userJpaRepository.save(user)
+        userService.editUser(payload)
         return MessageResponse("Successfully updated user information")
     }
 

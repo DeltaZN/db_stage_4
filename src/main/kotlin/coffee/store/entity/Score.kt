@@ -1,5 +1,6 @@
 package coffee.store.entity
 
+import coffee.store.model.Ownerable
 import javax.persistence.*
 
 @Entity
@@ -16,4 +17,7 @@ abstract class Score(
         @ManyToOne
         @JoinColumn(name = "id_клиента")
         open val author: User = User()
-)
+) : Ownerable {
+    override val owner: User
+        get() = author
+}

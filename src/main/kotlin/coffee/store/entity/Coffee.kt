@@ -2,6 +2,7 @@ package coffee.store.entity
 
 import coffee.store.model.CoffeeStatus
 import coffee.store.model.CoffeeType
+import coffee.store.model.Ownerable
 import javax.persistence.*
 
 @Entity
@@ -14,13 +15,16 @@ class Coffee(
         photo: ByteArray? = null,
         @Enumerated(EnumType.STRING)
         @Column(name = "тип")
-        val type: CoffeeType = CoffeeType.u,
+        var type: CoffeeType = CoffeeType.u,
         @Enumerated(EnumType.STRING)
         @Column(name = "состояние")
         var status: CoffeeStatus = CoffeeStatus.HIDDEN,
         @ManyToOne
         @JoinColumn(name = "id_автора")
-        var author: User? = null,
+        var author: User = User(),
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "coffee")
         var components: List<CoffeeComponent> = mutableListOf(),
-) : Product(id, name, cost, photo)
+) : Product(id, name, cost, photo), Ownerable {
+    override val owner: User
+        get() = author
+}

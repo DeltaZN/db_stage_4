@@ -23,4 +23,10 @@ interface ScheduleScoreJpaRepository : CrudRepository<ScheduleScore, Long> {
             countQuery = "select 1",
             nativeQuery = true)
     fun getAverageScoreBySchedule(scheduleId: Long): Double?
+
+    @Query(
+            value = "select addScheduleRating(?, ?, ?, ?)",
+            countQuery = "select 1",
+            nativeQuery = true)
+    fun storeScore(rating: Int, comment: String?, scheduleId: Long, clientId: Long): Long
 }

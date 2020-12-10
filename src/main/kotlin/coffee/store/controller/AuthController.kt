@@ -39,7 +39,7 @@ class AuthController(
         SecurityContextHolder.getContext().authentication = authentication
         val jwt = jwtUtils.generateJwtToken(authentication)
         val userDetails = authentication.principal as UserDetailsImpl
-        return ResponseEntity.ok<Any>(JwtResponse(
+        return ResponseEntity.ok(JwtResponse(
                 userDetails.username,
                 userDetails.authorities.stream()
                         .map { v -> v.authority }

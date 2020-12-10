@@ -1,30 +1,22 @@
 package coffee.store.controller
 
-import coffee.store.entity.CoffeeScore
-import coffee.store.entity.ScheduleScore
 import coffee.store.payload.common.ScorePayload
 import coffee.store.payload.response.MessageResponse
-import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.CoffeeScoreJpaRepository
-import coffee.store.repository.ScheduleJpaRepository
 import coffee.store.repository.ScheduleScoreJpaRepository
-import coffee.store.service.UserService
+import coffee.store.service.ScoresService
 import io.swagger.annotations.Api
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import javax.persistence.EntityNotFoundException
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/scores")
 @Api(tags = ["Score"])
 class ScoresController(
-        private val userService: UserService,
-        private val coffeeJpaRepository: CoffeeJpaRepository,
         private val coffeeScoreJpaRepository: CoffeeScoreJpaRepository,
-        private val scheduleJpaRepository: ScheduleJpaRepository,
         private val scheduleScoreJpaRepository: ScheduleScoreJpaRepository,
+        private val scoresService: ScoresService,
 ) {
     @GetMapping("schedule/{scheduleId}")
     fun getScheduleScores(@PathVariable scheduleId: Long): List<ScorePayload> =
@@ -39,86 +31,42 @@ class ScoresController(
     @PostMapping("coffee")
     @PreAuthorize("hasRole('CUSTOMER')")
     fun addCoffeeScore(@RequestBody payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth()
-        val coffeeScore = CoffeeScore()
-        val coffee = coffeeJpaRepository.findById(payload.itemId)
-                .orElseThrow { EntityNotFoundException("Coffee not found = ${payload.itemId}") }
-        if (coffeeScoreJpaRepository.findScoreByCoffeeIdAndUserId(coffee.id, user.id).isPresent)
-            throw IllegalAccessException("You can submit only one score per coffee")
-        coffeeScore.comment = payload.comment
-        coffeeScore.score = payload.score
-        coffeeScore.coffee = coffee
-        coffeeScoreJpaRepository.save(coffeeScore)
+        scoresService.addCoffeeScore(payload)
         return MessageResponse("Score successfully submitted!")
     }
 
     @PutMapping("coffee")
     @PreAuthorize("hasRole('CUSTOMER')")
     fun editCoffeeScore(@RequestBody payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth()
-        val coffeeScore = coffeeScoreJpaRepository.findById(payload.id!!)
-                .orElseThrow { EntityNotFoundException("Coffee score not found - ${payload.id}") }
-        if (coffeeScore.author.id != user.id)
-            throw IllegalAccessException("An attempt to change a wrong score!")
-        coffeeScore.comment = payload.comment
-        coffeeScore.score = payload.score
-        coffeeScoreJpaRepository.save(coffeeScore)
+        scoresService.editCoffeeScore(payload)
         return MessageResponse("Coffee successfully edited!")
     }
 
     @DeleteMapping("coffee/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")
     fun deleteCoffeeScore(@PathVariable id: Long): MessageResponse {
-        val user = userService.getUserFromAuth()
-        val coffeeScore = coffeeScoreJpaRepository.findById(id)
-                .orElseThrow { EntityNotFoundException("Coffee score not found - $id") }
-        if (coffeeScore.author.id != user.id)
-            throw IllegalAccessException("An attempt to delete a wrong score!")
-        coffeeScoreJpaRepository.delete(coffeeScore)
+        scoresService.deleteCoffeeScore(id)
         return MessageResponse("Coffee successfully deleted!")
     }
 
     @PostMapping("schedule")
     @PreAuthorize("hasRole('CUSTOMER')")
     fun addScheduleScore(@RequestBody payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth()
-        val scheduleScore = ScheduleScore()
-        scheduleScore.comment = payload.comment
-        scheduleScore.score = payload.score
-        val schedule = scheduleJpaRepository.findById(payload.itemId)
-                .orElseThrow { EntityNotFoundException("Schedule not found = ${payload.itemId}") }
-        if (payload.id == null) {
-            if (scheduleScoreJpaRepository.findScoreByScheduleIdAndUserId(schedule.id, user.id).isPresent)
-                throw IllegalAccessException("You can submit only one score per schedule")
-            scheduleScore.schedule = schedule
-        }
-        scheduleScoreJpaRepository.save(scheduleScore)
+        scoresService.addScheduleScore(payload)
         return MessageResponse("Score successfully submitted!")
     }
 
     @PutMapping("schedule")
     @PreAuthorize("hasRole('CUSTOMER')")
     fun editScheduleScore(@RequestBody payload: ScorePayload): MessageResponse {
-        val user = userService.getUserFromAuth()
-        val scheduleScore = scheduleScoreJpaRepository.findById(payload.id!!)
-                .orElseThrow { EntityNotFoundException("Schedule score not found - ${payload.id}") }
-        if (scheduleScore.author.id != user.id)
-            throw IllegalAccessException("An attempt to change a wrong score!")
-        scheduleScore.comment = payload.comment
-        scheduleScore.score = payload.score
-        scheduleScoreJpaRepository.save(scheduleScore)
+        scoresService.editScheduleScore(payload)
         return MessageResponse("Score successfully edited!")
     }
 
     @DeleteMapping("schedule/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")
     fun deleteScheduleScore(@PathVariable id: Long): MessageResponse {
-        val user = userService.getUserFromAuth()
-        val scheduleScore = scheduleScoreJpaRepository.findById(id)
-                .orElseThrow { EntityNotFoundException("Schedule score not found - $id") }
-        if (scheduleScore.author.id != user.id)
-            throw IllegalAccessException("An attempt to delete a wrong score!")
-        scheduleScoreJpaRepository.delete(scheduleScore)
+        scoresService.deleteScheduleScore(id)
         return MessageResponse("Score successfully deleted!")
     }
 }
