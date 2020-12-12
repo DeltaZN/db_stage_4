@@ -27,20 +27,18 @@ class ScoresService(
     }
 
     fun editCoffeeScore(payload: ScorePayload) {
-        val user = userService.getUserFromAuth()
         val coffeeScore = coffeeScoreJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Coffee score not found - ${payload.id}") }
-        userService.checkAuthority(coffeeScore, user)
+        userService.checkAuthority(coffeeScore)
         coffeeScore.comment = payload.comment
         coffeeScore.score = payload.score
         coffeeScoreJpaRepository.save(coffeeScore)
     }
 
     fun deleteCoffeeScore(id: Long) {
-        val user = userService.getUserFromAuth()
         val coffeeScore = coffeeScoreJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Coffee score not found - $id") }
-        userService.checkAuthority(coffeeScore, user)
+        userService.checkAuthority(coffeeScore)
         coffeeScoreJpaRepository.delete(coffeeScore)
     }
 
@@ -54,20 +52,18 @@ class ScoresService(
     }
 
     fun editScheduleScore(payload: ScorePayload) {
-        val user = userService.getUserFromAuth()
         val scheduleScore = scheduleScoreJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Schedule score not found - ${payload.id}") }
-        userService.checkAuthority(scheduleScore, user)
+        userService.checkAuthority(scheduleScore)
         scheduleScore.comment = payload.comment
         scheduleScore.score = payload.score
         scheduleScoreJpaRepository.save(scheduleScore)
     }
 
     fun deleteScheduleScore(id: Long) {
-        val user = userService.getUserFromAuth()
         val scheduleScore = scheduleScoreJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Schedule score not found - $id") }
-        userService.checkAuthority(scheduleScore, user)
+        userService.checkAuthority(scheduleScore)
         scheduleScoreJpaRepository.delete(scheduleScore)
     }
 }

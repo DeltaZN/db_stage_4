@@ -10,6 +10,7 @@ import coffee.store.repository.IngredientJpaRepository
 import coffee.store.service.CoffeeService
 import coffee.store.service.UserService
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
@@ -33,6 +34,7 @@ class CoffeeConstructorController(
             coffeeJpaRepository.findUserCoffees(userService.getCurrentUserId())
                     .map { c -> CoffeeListItemResponse(c.id, c.name, c.cost, CoffeeType.valueOf(c.type), c.avgRating, c.photo) }
 
+    @ApiOperation("Add custom coffee as user")
     @PostMapping("coffees")
     fun addCustomCoffee(@RequestBody payload: CoffeeConstructRequest): MessageResponse {
         coffeeService.addCoffee(payload, CoffeeType.u)

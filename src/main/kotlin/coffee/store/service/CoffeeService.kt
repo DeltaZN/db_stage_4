@@ -57,10 +57,9 @@ class CoffeeService(
     }
 
     fun editCustomCoffee(payload: CoffeeConstructRequest) {
-        val user = userService.getUserFromAuth()
         val coffee = coffeeJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Coffee not found ${payload.id}") }
-        userService.checkAuthority(coffee, user)
+        userService.checkAuthority(coffee)
         payload.components?.let {
             val transformed = transformCoffeeComponents(it, coffee)
             coffee.components = transformed.first

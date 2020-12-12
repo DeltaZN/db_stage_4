@@ -8,6 +8,7 @@ import coffee.store.repository.ScheduleJpaRepository
 import coffee.store.service.ScheduleService
 import coffee.store.service.UserService
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
@@ -22,6 +23,7 @@ class ScheduleController(
         private val userService: UserService,
 ) {
 
+    @ApiOperation("Get your custom schedules")
     @GetMapping
     fun getSchedules(): List<ScheduleListItemResponse> =
             scheduleJpaRepository.findUserSchedules(userService.getCurrentUserId())

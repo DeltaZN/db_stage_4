@@ -1,11 +1,11 @@
 package coffee.store.controller
 
+import coffee.store.entity.Coffee
+import coffee.store.model.ProductType
 import coffee.store.payload.common.UserInformationPayload
 import coffee.store.payload.request.IdListRequest
-import coffee.store.payload.response.CoffeeListItemResponse
-import coffee.store.payload.response.MessageResponse
-import coffee.store.payload.response.OrderListItemResponse
-import coffee.store.payload.response.ScheduleListItemResponse
+import coffee.store.payload.request.SubmitOrderItem
+import coffee.store.payload.response.*
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.OrderJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
@@ -45,6 +45,17 @@ class CustomerController(
     fun getOrders(): List<OrderListItemResponse> =
             orderJpaRepository.findOrderByUser(userService.getCurrentUserId())
                     .map { o -> OrderListItemResponse(o.id, o.status, o.cost, o.discount, o.orderTime) }
+
+    @GetMapping("order/{id}")
+    fun getOrder(@PathVariable id: Long): OrderFullItemResponse {
+        val order = orderJpaRepository.findById(id)
+                .orElseThrow { EntityNotFoundException("Order not found - $id") }
+        userService.checkAuthority(order)
+        return OrderFullItemResponse(order.id, order.status, order.coffeeStore, order.discount,
+                order.cost, order.orderTime, order.items.asIterable().map { i ->
+            SubmitOrderItem(i.id, i.quantity, if (i.product is Coffee) ProductType.Coffee else ProductType.Dessert)
+        })
+    }
 
     @GetMapping("favorite_coffees")
     @Transactional

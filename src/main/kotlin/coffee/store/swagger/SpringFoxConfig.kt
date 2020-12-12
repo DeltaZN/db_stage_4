@@ -38,7 +38,7 @@ class SpringFoxConfig : WebMvcConfigurationSupport() {
     private fun apiInfo() = ApiInfo(
             "Coffee Store",
             "Coffee store description of API.",
-            "0.2.0",
+            "0.2.1",
             "Terms of service",
             Contact("Georgii Savin", "", ""),
             "License of API",

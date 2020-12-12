@@ -21,6 +21,7 @@ import coffee.store.service.CoffeeService
 import coffee.store.service.ScheduleService
 import coffee.store.service.UserService
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -42,6 +43,7 @@ class OrderController(
     @GetMapping("stores")
     fun getCoffeeStores(): List<CoffeeStore> = coffeeStoreJpaRepository.findAll().toList()
 
+    @ApiOperation("Get public coffees")
     @GetMapping("coffees")
     fun getCoffees(): List<CoffeeListItemResponse> = coffeeJpaRepository.findAllPublicCoffee()
             .map { c ->
@@ -52,6 +54,7 @@ class OrderController(
     @GetMapping("coffees/{id}")
     fun getCoffee(@PathVariable id: Long) = coffeeService.getCoffee(id)
 
+    @ApiOperation("Get public schedules")
     @GetMapping("schedules")
     fun getSchedules(): List<ScheduleListItemResponse> = scheduleJpaRepository.findAllPublicSchedules()
             .map { c ->
@@ -59,7 +62,7 @@ class OrderController(
                         c.avgRating, ScheduleStatus.valueOf(c.status))
             }
 
-    @GetMapping("{id}")
+    @GetMapping("schedule/{id}")
     fun getSchedule(@PathVariable id: Long) = scheduleService.getSchedule(id)
 
     @GetMapping("desserts")

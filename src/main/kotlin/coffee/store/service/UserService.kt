@@ -20,7 +20,8 @@ class UserService(
     fun getUserFromAuth(): User = userJpaRepository.findById(getCurrentUserId())
             .orElseThrow { UsernameNotFoundException("User not found - ${getCurrentUserId()}") }
 
-    fun checkAuthority(item: Ownerable, accessor: User) {
+    fun checkAuthority(item: Ownerable) {
+        val accessor = getUserFromAuth()
         if (accessor.roles.any { r -> r.name == ERole.ROLE_ADMIN })
             return
         if (item.owner.id != accessor.id)

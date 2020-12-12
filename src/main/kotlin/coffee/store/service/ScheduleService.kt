@@ -27,7 +27,7 @@ class ScheduleService(
 ) {
     @Transactional
     fun getSchedule(id: Long): ScheduleFullItemResponse {
-        val schedule = scheduleJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Coffee not found - $id") }
+        val schedule = scheduleJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Schedule not found - $id") }
         val components = schedule.components.asIterable()
                 .map { c ->
                     val items = c.order.items.asIterable().map { i ->
@@ -58,7 +58,7 @@ class ScheduleService(
         val user = userService.getUserFromAuth()
         val schedule = scheduleJpaRepository.findById(payload.id!!)
                 .orElseThrow { EntityNotFoundException("Schedule not found - ${payload.id}") }
-        userService.checkAuthority(schedule, user)
+        userService.checkAuthority(schedule)
         payload.name?.let { schedule.name = it }
         payload.description?.let { schedule.description = it }
         payload.status?.let { schedule.status = it }

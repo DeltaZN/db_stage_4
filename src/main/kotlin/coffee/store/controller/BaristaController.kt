@@ -10,6 +10,7 @@ import coffee.store.repository.DessertJpaRepository
 import coffee.store.repository.OrderJpaRepository
 import coffee.store.service.CoffeeService
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import javax.persistence.EntityNotFoundException
@@ -45,6 +46,7 @@ class BaristaController(
         return MessageResponse("Successfully create dessert, id - $createdId")
     }
 
+    @ApiOperation("Add standart coffee as barista")
     @PostMapping("coffee")
     fun addStandardCoffee(@RequestBody payload: CoffeeConstructRequest): MessageResponse {
         coffeeService.addCoffee(payload, CoffeeType.s)
