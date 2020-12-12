@@ -13,10 +13,7 @@ import coffee.store.payload.response.CoffeeListItemResponse
 import coffee.store.payload.response.DessertListItemResponse
 import coffee.store.payload.response.MessageResponse
 import coffee.store.payload.response.ScheduleListItemResponse
-import coffee.store.repository.CoffeeJpaRepository
-import coffee.store.repository.CoffeeStoreJpaRepository
-import coffee.store.repository.DessertJpaRepository
-import coffee.store.repository.ScheduleJpaRepository
+import coffee.store.repository.*
 import coffee.store.service.CoffeeService
 import coffee.store.service.ScheduleService
 import coffee.store.service.UserService
@@ -33,6 +30,8 @@ import javax.persistence.EntityNotFoundException
 @Api(tags = ["Order"])
 class OrderController(
         private val coffeeStoreJpaRepository: CoffeeStoreJpaRepository,
+        private val orderJpaRepository: OrderJpaRepository,
+        private val orderComponentJpaRepository: OrderComponentJpaRepository,
         private val coffeeService: CoffeeService,
         private val coffeeJpaRepository: CoffeeJpaRepository,
         private val dessertsJpaRepository: DessertJpaRepository,
@@ -73,7 +72,6 @@ class OrderController(
     fun getDessert(@PathVariable id: Long): Dessert =
             dessertsJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Dessert not found - $id") }
 
-    // TODO получение всей информации заказа
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     fun submitOrder(@RequestBody order: SubmitOrderRequest): MessageResponse {
@@ -92,9 +90,11 @@ class OrderController(
                         .orElseThrow { EntityNotFoundException("Dessert not found - ${i.productId}") }
             }
             sum += product.cost * i.quantity
-            OrderItem(0, newOrder, product)
+            OrderItem(0, newOrder, product, i.quantity)
         }
-        newOrder.items = orderItemList
+        newOrder.cost = sum
+        orderJpaRepository.save(newOrder)
+        orderItemList.forEach { i -> orderComponentJpaRepository.save(i) }
         return MessageResponse("Order successfully submitted!")
     }
 }

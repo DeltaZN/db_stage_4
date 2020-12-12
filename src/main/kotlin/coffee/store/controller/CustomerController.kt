@@ -47,6 +47,7 @@ class CustomerController(
                     .map { o -> OrderListItemResponse(o.id, o.status, o.cost, o.discount, o.orderTime) }
 
     @GetMapping("order/{id}")
+    @Transactional
     fun getOrder(@PathVariable id: Long): OrderFullItemResponse {
         val order = orderJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Order not found - $id") }

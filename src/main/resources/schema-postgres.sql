@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS адрес;
 
 CREATE TABLE адрес
 (
-    id                       SERIAL PRIMARY KEY,
+    id                       BIGSERIAL PRIMARY KEY,
     страна                   TEXT,
     субъект                  TEXT,
     муниципальный_район      TEXT,
@@ -37,14 +37,14 @@ CREATE TABLE адрес
 
 CREATE TABLE кофейня
 (
-    id        SERIAL PRIMARY KEY,
-    id_адреса INTEGER REFERENCES адрес (id) NOT NULL,
-    телефон   TEXT                          NOT NULL
+    id        BIGSERIAL PRIMARY KEY,
+    id_адреса BIGINT REFERENCES адрес (id) NOT NULL,
+    телефон   TEXT                         NOT NULL
 );
 
 CREATE TABLE товар
 (
-    id        SERIAL PRIMARY KEY,
+    id        BIGSERIAL PRIMARY KEY,
     название  TEXT NOT NULL,
     стоимость REAL,
     фото      BYTEA
@@ -52,19 +52,19 @@ CREATE TABLE товар
 
 CREATE TABLE десерт
 (
-    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE,
+    id_товара BIGINT PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE,
     калории   FLOAT NOT NULL,
     вес       FLOAT
 );
 
 CREATE TABLE клиент
 (
-    id            SERIAL PRIMARY KEY,
+    id            BIGSERIAL PRIMARY KEY,
     имя           TEXT    NOT NULL,
     фамилия       TEXT    NOT NULL,
     пол           CHAR(1) NOT NULL CHECK (пол = 'M' OR пол = 'F'),
     дата_рождения DATE,
-    id_адреса     INTEGER REFERENCES адрес (id),
+    id_адреса     BIGINT REFERENCES адрес (id),
     email         TEXT UNIQUE,
     телефон       TEXT    NOT NULL UNIQUE,
     пароль        TEXT    NOT NULL
@@ -72,28 +72,28 @@ CREATE TABLE клиент
 
 CREATE TABLE роль
 (
-    id       SERIAL PRIMARY KEY,
+    id       BIGSERIAL PRIMARY KEY,
     название TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE роли_пользователей
 (
-    id_клиента INTEGER NOT NULL,
-    id_роли    INTEGER NOT NULL,
+    id_клиента BIGINT NOT NULL,
+    id_роли    BIGINT NOT NULL,
     PRIMARY KEY (id_клиента, id_роли)
 );
 
 CREATE TABLE кофе
 (
-    id_товара INTEGER PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE,
-    тип       CHAR                           NOT NULL CHECK (тип IN ('u', 's') ),
-    состояние TEXT                           NOT NULL,
-    id_автора INTEGER REFERENCES клиент (id) NOT NULL
+    id_товара BIGINT PRIMARY KEY REFERENCES товар (id) ON DELETE CASCADE,
+    тип       CHAR                          NOT NULL CHECK (тип IN ('u', 's') ),
+    состояние TEXT                          NOT NULL,
+    id_автора BIGINT REFERENCES клиент (id) NOT NULL
 );
 
 CREATE TABLE ингредиент
 (
-    id            SERIAL PRIMARY KEY,
+    id            BIGSERIAL PRIMARY KEY,
     название      TEXT  NOT NULL,
     стоимость     FLOAT NOT NULL,
     количество_мл FLOAT NOT NULL
@@ -101,19 +101,19 @@ CREATE TABLE ингредиент
 
 CREATE TABLE компонент_кофе
 (
-    id                 SERIAL PRIMARY KEY,
-    id_кофе            INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
-    id_ингредиента     INTEGER REFERENCES ингредиент (id)                    NOT NULL,
-    количество         FLOAT                                                 NOT NULL CHECK (количество > 0.0),
-    порядок_добавления INTEGER                                               NOT NULL CHECK (порядок_добавления >= 0)
+    id                 BIGSERIAL PRIMARY KEY,
+    id_кофе            BIGINT REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
+    id_ингредиента     BIGINT REFERENCES ингредиент (id)                    NOT NULL,
+    количество         FLOAT                                                NOT NULL CHECK (количество > 0.0),
+    порядок_добавления INTEGER                                              NOT NULL CHECK (порядок_добавления >= 0)
 );
 
 CREATE TABLE заказ
 (
-    id                 SERIAL PRIMARY KEY,
-    статус_заказа      TEXT                           NOT NULL,
-    id_клиента         INTEGER REFERENCES клиент (id) NOT NULL,
-    id_кофейни         INTEGER REFERENCES кофейня (id),
+    id                 BIGSERIAL PRIMARY KEY,
+    статус_заказа      TEXT                          NOT NULL,
+    id_клиента         BIGINT REFERENCES клиент (id) NOT NULL,
+    id_кофейни         BIGINT REFERENCES кофейня (id),
     скидка             FLOAT CHECK (скидка >= 0.0 AND скидка <= 100),
     стоимость          FLOAT,
     время_формирования TIMESTAMP
@@ -121,66 +121,66 @@ CREATE TABLE заказ
 
 CREATE TABLE компонент_заказа
 (
-    id         SERIAL PRIMARY KEY,
-    количество INTEGER DEFAULT 1                               NOT NULL,
-    id_заказа  INTEGER REFERENCES заказ (id) ON DELETE CASCADE NOT NULL,
-    id_товара  INTEGER REFERENCES товар (id)                   NOT NULL
+    id         BIGSERIAL PRIMARY KEY,
+    количество INTEGER DEFAULT 1                              NOT NULL,
+    id_заказа  BIGINT REFERENCES заказ (id) ON DELETE CASCADE NOT NULL,
+    id_товара  BIGINT REFERENCES товар (id)                   NOT NULL
 );
 
 CREATE TABLE расписание
 (
-    id         SERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY,
     название   VARCHAR(32),
-    id_клиента INTEGER REFERENCES клиент (id) NOT NULL,
+    id_клиента BIGINT REFERENCES клиент (id) NOT NULL,
     описание   TEXT,
-    состояние  TEXT                           NOT NULL
+    состояние  TEXT                          NOT NULL
 );
 
 CREATE TABLE запись_расписания
 (
-    id            SERIAL PRIMARY KEY,
+    id            BIGSERIAL PRIMARY KEY,
     название      TEXT,
-    id_расписания INTEGER REFERENCES расписание (id) ON DELETE CASCADE NOT NULL,
-    id_заказа     INTEGER REFERENCES заказ (id)                        NOT NULL,
-    день_недели   INTEGER                                              NOT NULL,
-    время         TIME                                                 NOT NULL
+    id_расписания BIGINT REFERENCES расписание (id) ON DELETE CASCADE NOT NULL,
+    id_заказа     BIGINT REFERENCES заказ (id)                        NOT NULL,
+    день_недели   INTEGER                                             NOT NULL,
+    время         TIME                                                NOT NULL
 );
 
 CREATE TABLE оценка
 (
-    id         SERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY,
     оценка     INTEGER CHECK (оценка >= 0 AND оценка <= 5) NOT NULL,
-    отзыв      TEXT                                        NOT NULL,
-    id_клиента INTEGER REFERENCES клиент (id)              NOT NULL
+    отзыв      TEXT,
+    id_клиента BIGINT REFERENCES клиент (id)               NOT NULL
 );
 
 CREATE TABLE оценка_кофе
 (
-    id_оценки INTEGER PRIMARY KEY REFERENCES оценка (id),
-    id_кофе   INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL
+    id_оценки BIGINT PRIMARY KEY REFERENCES оценка (id),
+    id_кофе   BIGINT REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE оценка_расписания
 (
-    id_оценки     INTEGER PRIMARY KEY REFERENCES оценка (id),
-    id_расписания INTEGER REFERENCES расписание (id) ON DELETE CASCADE NOT NULL
+    id_оценки     BIGINT PRIMARY KEY REFERENCES оценка (id),
+    id_расписания BIGINT REFERENCES расписание (id) ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE любимые_расписания
 (
-    id_клиента    INTEGER REFERENCES клиент (id)                       NOT NULL,
-    id_расписания INTEGER REFERENCES расписание (id) ON DELETE CASCADE NOT NULL,
+    id_клиента    BIGINT REFERENCES клиент (id)                       NOT NULL,
+    id_расписания BIGINT REFERENCES расписание (id) ON DELETE CASCADE NOT NULL,
     PRIMARY KEY (id_клиента, id_расписания)
 );
 
 CREATE TABLE любимые_кофе
 (
-    id_клиента INTEGER REFERENCES клиент (id)                        NOT NULL,
-    id_кофе    INTEGER REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
+    id_клиента BIGINT REFERENCES клиент (id)                        NOT NULL,
+    id_кофе    BIGINT REFERENCES кофе (id_товара) ON DELETE CASCADE NOT NULL,
     PRIMARY KEY (id_клиента, id_кофе)
 );
 
-CREATE OR REPLACE FUNCTION calculate_recipe_total_volume(coffee INT) RETURNS float AS
+CREATE OR REPLACE FUNCTION calculate_recipe_total_volume(coffee BIGINT) RETURNS float AS
 '
     DECLARE
         sum float;
@@ -228,60 +228,12 @@ CREATE TRIGGER recipe_ingredients
     FOR EACH ROW
 EXECUTE PROCEDURE check_recipe();
 
-
-CREATE OR REPLACE FUNCTION delete_score() RETURNS TRIGGER AS
-'
-    BEGIN
-        DELETE
-        FROM оценка
-        WHERE оценка.id = OLD.id_оценки;
-        RETURN NULL;
-    END;
-' LANGUAGE plpgsql;
--- триггер удаления оценок при удалении оценки кофе
-CREATE TRIGGER score_coffee_delete
-    AFTER DELETE
-    ON оценка_кофе
-    FOR EACH ROW
-EXECUTE PROCEDURE delete_score();
-
--- триггер удаления оценок при удалении оценки расписания
-CREATE TRIGGER score_schedule_delete
-    AFTER DELETE
-    ON оценка_расписания
-    FOR EACH ROW
-EXECUTE PROCEDURE delete_score();
-
-CREATE OR REPLACE FUNCTION delete_product() RETURNS TRIGGER AS
-'
-    BEGIN
-        DELETE
-        FROM товар
-        WHERE товар.id = OLD.id_товара;
-        RETURN NULL;
-    END;
-' LANGUAGE plpgsql;
-
--- триггер удаления товара при удалении десерта
-CREATE TRIGGER desert_product_delete
-    AFTER DELETE
-    ON десерт
-    FOR EACH ROW
-EXECUTE PROCEDURE delete_product();
-
--- триггер удаления товара при удалении кофе
-CREATE TRIGGER coffee_product_delete
-    AFTER DELETE
-    ON кофе
-    FOR EACH ROW
-EXECUTE PROCEDURE delete_product();
-
-CREATE OR REPLACE FUNCTION createCoffee(coffee_name text, cost float, photo bytea, coffee_type char, author int,
-                                        coffee_state text) RETURNS INT
+CREATE OR REPLACE FUNCTION createCoffee(coffee_name text, cost float, photo bytea, coffee_type char, author BIGINT,
+                                        coffee_state text) RETURNS BIGINT
     STRICT AS
 '
     DECLARE
-        ret int;
+        ret BIGINT;
     BEGIN
     INSERT INTO товар(название, стоимость, фото)
     VALUES (coffee_name, cost, photo)
@@ -291,11 +243,11 @@ CREATE OR REPLACE FUNCTION createCoffee(coffee_name text, cost float, photo byte
     VALUES (ret, coffee_type, author, coffee_state); RETURN ret; END;
 ' LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION createDessert(name text, price float, photo bytea, calories float, weight float) RETURNS INT
+CREATE OR REPLACE FUNCTION createDessert(name text, price float, photo bytea, calories float, weight float) RETURNS BIGINT
     STRICT AS
 '
     DECLARE
-        ret int;
+        ret BIGINT;
     BEGIN
     INSERT INTO товар(название, стоимость, фото)
     VALUES (name, price, photo)
@@ -305,11 +257,11 @@ CREATE OR REPLACE FUNCTION createDessert(name text, price float, photo bytea, ca
     VALUES (ret, calories, weight); RETURN ret; END;
 ' LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION addCoffeeRating(rating int, comments text, coffee int, client int) RETURNS INT
+CREATE OR REPLACE FUNCTION addCoffeeRating(rating int, comments text, coffee BIGINT, client BIGINT) RETURNS BIGINT
     STRICT AS
 '
     DECLARE
-        ret int;
+        ret BIGINT;
     BEGIN
     INSERT INTO оценка(оценка, отзыв, id_клиента)
     VALUES (rating, comments, client)
@@ -319,11 +271,11 @@ CREATE OR REPLACE FUNCTION addCoffeeRating(rating int, comments text, coffee int
     VALUES (ret, coffee); RETURN ret; END;
 ' LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION addScheduleRating(rating int, comments text, schedule int, client int) RETURNS INT
+CREATE OR REPLACE FUNCTION addScheduleRating(rating int, comments text, schedule BIGINT, client BIGINT) RETURNS BIGINT
     STRICT AS
 '
     DECLARE
-        ret int;
+        ret BIGINT;
     BEGIN
     INSERT INTO оценка(оценка, отзыв, id_клиента)
     VALUES (rating, comments, client)
@@ -333,11 +285,11 @@ CREATE OR REPLACE FUNCTION addScheduleRating(rating int, comments text, schedule
     VALUES (ret, schedule); RETURN ret; END;
 ' LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION copySchedule(schedule int, client int) RETURNS INT
+CREATE OR REPLACE FUNCTION copySchedule(schedule BIGINT, client BIGINT) RETURNS BIGINT
     STRICT AS
 '
     DECLARE
-        newSchedId int;
+        newSchedId BIGINT;
     BEGIN
     INSERT INTO расписание(название, id_клиента, описание, состояние)
     SELECT название,
@@ -358,20 +310,22 @@ CREATE OR REPLACE FUNCTION copySchedule(schedule int, client int) RETURNS INT
     WHERE id_расписания = schedule; RETURN newSchedId; END;
 ' LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION copyCoffee(coffee int, author int) RETURNS INT
+CREATE OR REPLACE FUNCTION copyCoffee(coffee BIGINT, author BIGINT) RETURNS BIGINT
     STRICT AS
 '
     DECLARE
-        newCoffeeId int;
+        newCoffeeId BIGINT;
     BEGIN
     INSERT INTO товар(название, стоимость, фото)
-    SELECT название, стоимость, фото
+    SELECT название,
+           стоимость,
+           фото
     FROM товар
     WHERE id = coffee
     RETURNING id
     INTO newCoffeeId;
     INSERT
-    INTO кофе(id_товара, тип, id_автора, состояние)
+        INTO кофе(id_товара, тип, id_автора, состояние)
     VALUES (newCoffeeId, ''u'', author, ''HIDDEN'');
     INSERT INTO компонент_кофе(id_кофе, id_ингредиента, количество, порядок_добавления)
     SELECT newCoffeeId,

@@ -25,6 +25,7 @@ class ScheduleService(
         private val dessertJpaRepository: DessertJpaRepository,
         private val userService: UserService,
 ) {
+    // TODO doesn't work currently
     @Transactional
     fun getSchedule(id: Long): ScheduleFullItemResponse {
         val schedule = scheduleJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Schedule not found - $id") }

@@ -7,7 +7,7 @@ import coffee.store.payload.request.constructor.CoffeeConstructComponent
 import coffee.store.payload.request.constructor.CoffeeConstructRequest
 import coffee.store.payload.response.CoffeeFullItemComponent
 import coffee.store.payload.response.CoffeeFullItemResponse
-import coffee.store.payload.response.MessageResponse
+import coffee.store.repository.CoffeeComponentJpaRepository
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.CoffeeScoreJpaRepository
 import coffee.store.repository.IngredientJpaRepository
@@ -18,6 +18,7 @@ import javax.transaction.Transactional
 @Service
 class CoffeeService(
         private val coffeeJpaRepository: CoffeeJpaRepository,
+        private val coffeeComponentJpaRepository: CoffeeComponentJpaRepository,
         private val userService: UserService,
         private val ingredientJpaRepository: IngredientJpaRepository,
         private val coffeeScoreJpaRepository: CoffeeScoreJpaRepository,
@@ -33,11 +34,11 @@ class CoffeeService(
                             c.quantity, c.ingredient.volumeMl)
                 }
         return CoffeeFullItemResponse(coffee.id, coffee.name, coffee.cost, coffee.type,
-                "${coffee.author.firstName} ${coffee.author.lastName}",
+                "${coffee.author.firstName} ${coffee.author.lastName}", coffee.status,
                 coffeeScoreJpaRepository.getAverageScoreByCoffee(coffee.id), coffee.photo, components)
     }
 
-    fun addCoffee(payload: CoffeeConstructRequest, coffeeType: CoffeeType): MessageResponse {
+    fun addCoffee(payload: CoffeeConstructRequest, coffeeType: CoffeeType) {
         val user = userService.getUserFromAuth()
         val coffee = Coffee()
         var totalCost = 0.0
@@ -53,7 +54,7 @@ class CoffeeService(
         coffee.photo = payload.photo
         coffee.cost = totalCost
         coffeeJpaRepository.save(coffee)
-        return MessageResponse("Successfully added coffee!")
+        coffee.components.forEach { c -> coffeeComponentJpaRepository.save(c) }
     }
 
     fun editCustomCoffee(payload: CoffeeConstructRequest) {
@@ -71,6 +72,7 @@ class CoffeeService(
         coffeeJpaRepository.save(coffee)
     }
 
+    @Transactional
     fun copyAndGetCoffee(id: Long): CoffeeFullItemResponse {
         val user = userService.getCurrentUserId()
         val newId = coffeeJpaRepository.copyCoffee(id, user)

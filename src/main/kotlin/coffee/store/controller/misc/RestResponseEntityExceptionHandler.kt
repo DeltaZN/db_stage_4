@@ -25,7 +25,7 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(value = [IllegalAccessException::class])
     protected fun handleForbidden(
             ex: Exception, request: WebRequest): ResponseEntity<Any?>? {
-        return handleExceptionInternal(ex, MessageResponse(ex.message!!),
+        return handleExceptionInternal(ex, "Access denied!",
                 HttpHeaders(), HttpStatus.FORBIDDEN, request)
     }
 }

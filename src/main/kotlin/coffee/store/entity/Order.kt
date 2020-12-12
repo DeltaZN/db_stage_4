@@ -23,7 +23,7 @@ data class Order(
         @Column(name = "скидка")
         val discount: Double? = 0.0,
         @Column(name = "стоимость")
-        val cost: Double = 0.0,
+        var cost: Double = 0.0,
         @Column(name = "время_формирования")
         val orderTime: LocalDateTime? = null,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")

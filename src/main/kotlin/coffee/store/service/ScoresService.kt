@@ -1,5 +1,7 @@
 package coffee.store.service
 
+import coffee.store.entity.CoffeeScore
+import coffee.store.entity.ScheduleScore
 import coffee.store.payload.common.ScorePayload
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.CoffeeScoreJpaRepository
@@ -23,7 +25,10 @@ class ScoresService(
                 .orElseThrow { EntityNotFoundException("Coffee not found = ${payload.itemId}") }
         if (coffeeScoreJpaRepository.findScoreByCoffeeIdAndUserId(coffee.id, user.id).isPresent)
             throw IllegalAccessException("You can submit only one score per coffee")
-        coffeeScoreJpaRepository.storeScore(payload.score, payload.comment, coffee.id, user.id)
+        if (payload.comment == null)
+            coffeeScoreJpaRepository.save(CoffeeScore(0, payload.score, payload.comment, user, coffee))
+        else
+            coffeeScoreJpaRepository.storeScore(payload.score, payload.comment, coffee.id, user.id)
     }
 
     fun editCoffeeScore(payload: ScorePayload) {
@@ -48,7 +53,10 @@ class ScoresService(
                 .orElseThrow { EntityNotFoundException("Schedule not found = ${payload.itemId}") }
         if (scheduleScoreJpaRepository.findScoreByScheduleIdAndUserId(schedule.id, user.id).isPresent)
             throw IllegalAccessException("You can submit only one score per schedule")
-        scheduleScoreJpaRepository.storeScore(payload.score, payload.comment, schedule.id, user.id)
+        if (payload.comment == null)
+            scheduleScoreJpaRepository.save(ScheduleScore(0, payload.score, payload.comment, user, schedule))
+        else
+            scheduleScoreJpaRepository.storeScore(payload.score, payload.comment, schedule.id, user.id)
     }
 
     fun editScheduleScore(payload: ScorePayload) {
