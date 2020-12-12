@@ -1,4 +1,4 @@
-package coffee.store.payload.response
+package coffee.store.payload.response.coffee
 
 import coffee.store.model.CoffeeStatus
 import coffee.store.model.CoffeeType

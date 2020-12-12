@@ -8,11 +8,11 @@ import coffee.store.model.CoffeeType
 import coffee.store.model.OrderStatus
 import coffee.store.model.ProductType
 import coffee.store.model.ScheduleStatus
-import coffee.store.payload.request.SubmitOrderRequest
-import coffee.store.payload.response.CoffeeListItemResponse
+import coffee.store.payload.request.order.SubmitOrderRequest
 import coffee.store.payload.response.DessertListItemResponse
 import coffee.store.payload.response.MessageResponse
-import coffee.store.payload.response.ScheduleListItemResponse
+import coffee.store.payload.response.coffee.CoffeeListItemResponse
+import coffee.store.payload.response.schedule.ScheduleListItemResponse
 import coffee.store.repository.*
 import coffee.store.service.CoffeeService
 import coffee.store.service.ScheduleService

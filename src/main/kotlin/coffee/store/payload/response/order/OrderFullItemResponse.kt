@@ -1,8 +1,7 @@
-package coffee.store.payload.response
+package coffee.store.payload.response.order
 
 import coffee.store.entity.CoffeeStore
 import coffee.store.model.OrderStatus
-import coffee.store.payload.request.SubmitOrderItem
 import java.time.LocalDateTime
 
 data class OrderFullItemResponse(
@@ -12,5 +11,5 @@ data class OrderFullItemResponse(
         val discount: Double?,
         val cost: Double,
         val orderTime: LocalDateTime?,
-        var items: List<SubmitOrderItem>,
+        var items: List<OrderFullItemComponent>,
 )

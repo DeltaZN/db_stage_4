@@ -1,4 +1,4 @@
-package coffee.store.payload.request
+package coffee.store.payload.request.order
 
 data class SubmitOrderRequest(
         val coffeeStoreId: Long,

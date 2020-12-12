@@ -1,4 +1,4 @@
-package coffee.store.payload.response
+package coffee.store.payload.response.order
 
 import coffee.store.model.OrderStatus
 import java.time.LocalDateTime

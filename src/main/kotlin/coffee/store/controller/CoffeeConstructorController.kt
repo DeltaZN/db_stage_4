@@ -3,8 +3,8 @@ package coffee.store.controller
 import coffee.store.entity.Ingredient
 import coffee.store.model.CoffeeType
 import coffee.store.payload.request.constructor.CoffeeConstructRequest
-import coffee.store.payload.response.CoffeeListItemResponse
 import coffee.store.payload.response.MessageResponse
+import coffee.store.payload.response.coffee.CoffeeListItemResponse
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.IngredientJpaRepository
 import coffee.store.service.CoffeeService

@@ -3,7 +3,7 @@ package coffee.store.controller
 import coffee.store.model.ScheduleStatus
 import coffee.store.payload.request.schedule.ScheduleRequest
 import coffee.store.payload.response.MessageResponse
-import coffee.store.payload.response.ScheduleListItemResponse
+import coffee.store.payload.response.schedule.ScheduleListItemResponse
 import coffee.store.repository.ScheduleJpaRepository
 import coffee.store.service.ScheduleService
 import coffee.store.service.UserService

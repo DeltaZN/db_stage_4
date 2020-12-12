@@ -4,8 +4,12 @@ import coffee.store.entity.Coffee
 import coffee.store.model.ProductType
 import coffee.store.payload.common.UserInformationPayload
 import coffee.store.payload.request.IdListRequest
-import coffee.store.payload.request.SubmitOrderItem
-import coffee.store.payload.response.*
+import coffee.store.payload.response.MessageResponse
+import coffee.store.payload.response.coffee.CoffeeListItemResponse
+import coffee.store.payload.response.order.OrderFullItemComponent
+import coffee.store.payload.response.order.OrderFullItemResponse
+import coffee.store.payload.response.order.OrderListItemResponse
+import coffee.store.payload.response.schedule.ScheduleListItemResponse
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.OrderJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
@@ -53,15 +57,16 @@ class CustomerController(
                 .orElseThrow { EntityNotFoundException("Order not found - $id") }
         userService.checkAuthority(order)
         return OrderFullItemResponse(order.id, order.status, order.coffeeStore, order.discount,
-                order.cost, order.orderTime, order.items.asIterable().map { i ->
-            SubmitOrderItem(i.id, i.quantity, if (i.product is Coffee) ProductType.Coffee else ProductType.Dessert)
+                order.cost, order.orderTime, order.items.map { i ->
+            OrderFullItemComponent(i.id, i.product.name, i.product.cost, i.quantity,
+                    if (i.product is Coffee) ProductType.Coffee else ProductType.Dessert)
         })
     }
 
     @GetMapping("favorite_coffees")
     @Transactional
     fun getFavoriteCoffees(): List<CoffeeListItemResponse> =
-            userService.getUserFromAuth().favoriteCoffees.asIterable()
+            userService.getUserFromAuth().favoriteCoffees
                     .map { c -> CoffeeListItemResponse(c.id, c.name, c.cost, c.type, null, c.photo) }
 
     @PostMapping("favorite_coffees")
@@ -87,7 +92,7 @@ class CustomerController(
     @GetMapping("favorite_schedules")
     @Transactional
     fun getFavoriteSchedules(): List<ScheduleListItemResponse> =
-            userService.getUserFromAuth().favoriteSchedules.asIterable()
+            userService.getUserFromAuth().favoriteSchedules
                     .map { s -> ScheduleListItemResponse(s.id, s.name, s.description, null, s.status) }
 
     @PostMapping("favorite_schedules")

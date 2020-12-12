@@ -5,8 +5,8 @@ import coffee.store.entity.CoffeeComponent
 import coffee.store.model.CoffeeType
 import coffee.store.payload.request.constructor.CoffeeConstructComponent
 import coffee.store.payload.request.constructor.CoffeeConstructRequest
-import coffee.store.payload.response.CoffeeFullItemComponent
-import coffee.store.payload.response.CoffeeFullItemResponse
+import coffee.store.payload.response.coffee.CoffeeFullItemComponent
+import coffee.store.payload.response.coffee.CoffeeFullItemResponse
 import coffee.store.repository.CoffeeComponentJpaRepository
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.CoffeeScoreJpaRepository
@@ -28,7 +28,7 @@ class CoffeeService(
     fun getCoffee(id: Long): CoffeeFullItemResponse {
         val coffee = coffeeJpaRepository.findById(id)
                 .orElseThrow { EntityNotFoundException("Coffee not found - $id") }
-        val components = coffee.components.asIterable()
+        val components = coffee.components
                 .map { c ->
                     CoffeeFullItemComponent(c.ingredient.name, c.addingOrder,
                             c.quantity, c.ingredient.volumeMl)
@@ -81,7 +81,7 @@ class CoffeeService(
 
     private fun transformCoffeeComponents(components: List<CoffeeConstructComponent>, coffee: Coffee): Pair<List<CoffeeComponent>, Double> {
         var totalCost = 0.0
-        val transformed = components.asIterable().map { c ->
+        val transformed = components.map { c ->
             val ingredient = ingredientJpaRepository.findById(c.ingredientId)
                     .orElseThrow { EntityNotFoundException("Ingredient not found - ${c.ingredientId}") }
             totalCost += c.quantity * ingredient.cost

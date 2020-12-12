@@ -3,11 +3,11 @@ package coffee.store.service
 import coffee.store.entity.*
 import coffee.store.model.OrderStatus
 import coffee.store.model.ProductType
-import coffee.store.payload.request.SubmitOrderItem
+import coffee.store.payload.request.order.SubmitOrderItem
 import coffee.store.payload.request.schedule.AddScheduleComponent
 import coffee.store.payload.request.schedule.ScheduleRequest
-import coffee.store.payload.response.ScheduleFullItemComponent
-import coffee.store.payload.response.ScheduleFullItemResponse
+import coffee.store.payload.response.schedule.ScheduleFullItemComponent
+import coffee.store.payload.response.schedule.ScheduleFullItemResponse
 import coffee.store.repository.CoffeeJpaRepository
 import coffee.store.repository.DessertJpaRepository
 import coffee.store.repository.ScheduleJpaRepository
@@ -25,13 +25,12 @@ class ScheduleService(
         private val dessertJpaRepository: DessertJpaRepository,
         private val userService: UserService,
 ) {
-    // TODO doesn't work currently
     @Transactional
     fun getSchedule(id: Long): ScheduleFullItemResponse {
         val schedule = scheduleJpaRepository.findById(id).orElseThrow { EntityNotFoundException("Schedule not found - $id") }
-        val components = schedule.components.asIterable()
+        val components = schedule.components
                 .map { c ->
-                    val items = c.order.items.asIterable().map { i ->
+                    val items = c.order.items.map { i ->
                         SubmitOrderItem(i.product.id, i.quantity, if (i.product is Coffee) ProductType.Coffee else ProductType.Dessert)
                     }
                     ScheduleFullItemComponent(c.name, items, c.dayOfWeek, c.time)
@@ -69,13 +68,14 @@ class ScheduleService(
         scheduleJpaRepository.save(schedule)
     }
 
+    @Transactional
     fun copyAndGetSchedule(id: Long): ScheduleFullItemResponse {
         val user = userService.getCurrentUserId()
         val newId = scheduleJpaRepository.copySchedule(id, user)
         return getSchedule(newId)
     }
 
-    private fun transformScheduleComponents(components: List<AddScheduleComponent>, schedule: Schedule, user: User) = components.asIterable()
+    private fun transformScheduleComponents(components: List<AddScheduleComponent>, schedule: Schedule, user: User) = components
             .map { s ->
                 val scheduleOrder = Order(0, OrderStatus.TEMPLATE, user, null, 0.0,
                         0.0, null)

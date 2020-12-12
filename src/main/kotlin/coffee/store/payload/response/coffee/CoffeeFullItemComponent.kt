@@ -1,4 +1,4 @@
-package coffee.store.payload.response
+package coffee.store.payload.response.coffee
 
 data class CoffeeFullItemComponent(
         val name: String,

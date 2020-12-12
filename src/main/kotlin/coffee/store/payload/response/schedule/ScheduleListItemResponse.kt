@@ -1,4 +1,4 @@
-package coffee.store.payload.response
+package coffee.store.payload.response.schedule
 
 import coffee.store.model.ScheduleStatus
 

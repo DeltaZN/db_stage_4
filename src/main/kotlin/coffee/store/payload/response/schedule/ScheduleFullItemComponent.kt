@@ -1,6 +1,6 @@
-package coffee.store.payload.response
+package coffee.store.payload.response.schedule
 
-import coffee.store.payload.request.SubmitOrderItem
+import coffee.store.payload.request.order.SubmitOrderItem
 import java.time.DayOfWeek
 import java.time.LocalTime
 

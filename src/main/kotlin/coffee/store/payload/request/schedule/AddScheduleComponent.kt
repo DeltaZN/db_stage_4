@@ -1,6 +1,6 @@
 package coffee.store.payload.request.schedule
 
-import coffee.store.payload.request.SubmitOrderItem
+import coffee.store.payload.request.order.SubmitOrderItem
 import java.time.LocalTime
 
 data class AddScheduleComponent(

@@ -1,5 +1,4 @@
 -- noinspection NonAsciiCharactersForFile
-
 DROP TABLE IF EXISTS любимые_расписания;
 DROP TABLE IF EXISTS любимые_кофе;
 DROP TABLE IF EXISTS компонент_кофе;

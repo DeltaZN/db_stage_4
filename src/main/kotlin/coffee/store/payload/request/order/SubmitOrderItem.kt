@@ -1,4 +1,4 @@
-package coffee.store.payload.request
+package coffee.store.payload.request.order
 
 import coffee.store.model.ProductType
 
