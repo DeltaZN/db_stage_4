@@ -46,7 +46,7 @@ CREATE TABLE товар
     id        BIGSERIAL PRIMARY KEY,
     название  TEXT NOT NULL,
     стоимость REAL,
-    фото      BYTEA
+    фото TEXT
 );
 
 CREATE TABLE десерт
@@ -227,7 +227,7 @@ CREATE TRIGGER recipe_ingredients
     FOR EACH ROW
 EXECUTE PROCEDURE check_recipe();
 
-CREATE OR REPLACE FUNCTION createCoffee(coffee_name text, cost float, photo bytea, coffee_type char, author BIGINT,
+CREATE OR REPLACE FUNCTION createCoffee(coffee_name text, cost float, photo text, coffee_type char, author BIGINT,
                                         coffee_state text) RETURNS BIGINT
     STRICT AS
 '
@@ -242,7 +242,7 @@ CREATE OR REPLACE FUNCTION createCoffee(coffee_name text, cost float, photo byte
     VALUES (ret, coffee_type, author, coffee_state); RETURN ret; END;
 ' LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION createDessert(name text, price float, photo bytea, calories float, weight float) RETURNS BIGINT
+CREATE OR REPLACE FUNCTION createDessert(name text, price float, photo text, calories float, weight float) RETURNS BIGINT
     STRICT AS
 '
     DECLARE

@@ -14,5 +14,5 @@ abstract class Product(
         @Column(name = "стоимость")
         open var cost: Double = 0.0,
         @Column(name = "фото")
-        open var photo: ByteArray? = null,
+        open var photo: String? = null,
 )

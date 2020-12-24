@@ -11,6 +11,6 @@ class CoffeeFullItemResponse(
         val author: String,
         val status: CoffeeStatus,
         val avgRating: Double? = null,
-        val photo: ByteArray? = null,
+        val photo: String? = null,
         val components: List<CoffeeFullItemComponent>,
 )

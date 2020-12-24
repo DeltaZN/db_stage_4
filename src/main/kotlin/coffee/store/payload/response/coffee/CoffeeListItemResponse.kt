@@ -8,5 +8,5 @@ data class CoffeeListItemResponse(
         val cost: Double?,
         val type: CoffeeType?,
         val avgRating: Double?,
-        val smallPhoto: ByteArray?,
+        val smallPhoto: String?,
 )

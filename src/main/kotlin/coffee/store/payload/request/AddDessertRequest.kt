@@ -5,5 +5,5 @@ data class AddDessertRequest(
         val cost: Double,
         val calories: Double,
         val weight: Double,
-        val photo: ByteArray?,
+        val photo: String?,
 )

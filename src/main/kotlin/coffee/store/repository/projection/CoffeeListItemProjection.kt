@@ -6,5 +6,5 @@ interface CoffeeListItemProjection {
     val cost: Double
     val type: String
     val avgRating: Double?
-    val photo: ByteArray?
+    val photo: String?
 }

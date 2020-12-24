@@ -28,7 +28,7 @@ interface CoffeeJpaRepository : CrudRepository<Coffee, Long> {
             value = "select createCoffee(?, ?, ?, ?, ?, ?)",
             countQuery = "select 1",
             nativeQuery = true)
-    fun storeCoffee(name: String, cost: Double, photo: ByteArray?,
+    fun storeCoffee(name: String, cost: Double, photo: String?,
                     coffeeType: CoffeeType, authorId: Long, coffeeStatus: CoffeeStatus): Long
 
     @Query(

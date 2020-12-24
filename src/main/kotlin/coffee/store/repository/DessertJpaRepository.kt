@@ -9,6 +9,6 @@ interface DessertJpaRepository : CrudRepository<Dessert, Long> {
             value = "select createDessert(?, ?, ?, ?, ?)",
             countQuery = "select 1",
             nativeQuery = true)
-    fun storeDessert(name: String, cost: Double, photo: ByteArray?,
+    fun storeDessert(name: String, cost: Double, photo: String?,
                      calories: Double, weight: Double): Long
 }

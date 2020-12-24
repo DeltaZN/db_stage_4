@@ -12,7 +12,7 @@ class Coffee(
         id: Long = 0,
         name: String = "",
         cost: Double = 0.0,
-        photo: ByteArray? = null,
+        photo: String? = null,
         @Enumerated(EnumType.STRING)
         @Column(name = "тип")
         var type: CoffeeType = CoffeeType.u,

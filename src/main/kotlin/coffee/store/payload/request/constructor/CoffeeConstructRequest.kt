@@ -6,6 +6,6 @@ data class CoffeeConstructRequest(
         val id: Long?,
         val name: String?,
         val status: CoffeeStatus?,
-        val photo: ByteArray?,
+        val photo: String?,
         val components: List<CoffeeConstructComponent>?,
 )
